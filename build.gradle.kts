@@ -6,7 +6,8 @@ plugins {
 }
 
 group = "com.github.shaart"
-version = "0.1.0-SNAPSHOT"
+version = "1.0.0"
+val applicationName = "pstorage-multiplatform"
 
 repositories {
     google()
@@ -34,17 +35,18 @@ compose.desktop {
         mainClass = "MainKt"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "pstorage-multiplatform"
-            packageVersion = "1.0.0"
+            packageName = applicationName
+            packageVersion = project.version.toString()
             val iconsDirPath = "src/jvmMain/resources/assets/icons/taskbar"
+            val iconsDir = project.file(iconsDirPath)
             macOS {
-                iconFile.set(project.file("$iconsDirPath/icon64.icns"))
+                iconFile.set(iconsDir.resolve("icon64.icns"))
             }
             linux {
-                iconFile.set(project.file("$iconsDirPath/icon64.png"))
+                iconFile.set(iconsDir.resolve("icon64.png"))
             }
             windows {
-                iconFile.set(project.file("$iconsDirPath/icon64.ico"))
+                iconFile.set(iconsDir.resolve("icon64.ico"))
             }
         }
     }

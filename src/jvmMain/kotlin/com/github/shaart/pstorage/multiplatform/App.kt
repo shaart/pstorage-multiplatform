@@ -1,3 +1,5 @@
+package com.github.shaart.pstorage.multiplatform
+
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
