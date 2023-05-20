@@ -36,6 +36,16 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "pstorage-multiplatform"
             packageVersion = "1.0.0"
+            val iconsDirPath = "src/jvmMain/resources/assets/icons/taskbar"
+            macOS {
+                iconFile.set(project.file("$iconsDirPath/icon64.icns"))
+            }
+            linux {
+                iconFile.set(project.file("$iconsDirPath/icon64.png"))
+            }
+            windows {
+                iconFile.set(project.file("$iconsDirPath/icon64.ico"))
+            }
         }
     }
 }
