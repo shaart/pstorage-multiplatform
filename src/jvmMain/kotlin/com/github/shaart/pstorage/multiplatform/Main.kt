@@ -1,3 +1,5 @@
+package com.github.shaart.pstorage.multiplatform
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.LaunchedEffect
@@ -14,7 +16,6 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import com.github.shaart.pstorage.multiplatform.App
 import kotlinx.coroutines.delay
 
 private const val APPLICATION_NAME = "PStorage"
