@@ -1,0 +1,13 @@
+CREATE TABLE dct_roles (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT UNIQUE NOT NULL,
+    created_at TEXT DEFAULT (strftime('%Y-%m-%d %H-%M-%f','now'))
+);
+
+INSERT INTO dct_roles (id, name, created_at) VALUES (1, 'ADMIN', now());
+
+INSERT INTO dct_roles (id, name, created_at) VALUES (2, 'USER', now());
+
+ALTER TABLE usr_users
+    ADD COLUMN role_id INTEGER NOT NULL DEFAULT 2
+        REFERENCES dct_roles(id);

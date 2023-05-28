@@ -1,0 +1,5 @@
+ALTER TABLE usr_passwords
+    ADD COLUMN encrypt_type TEXT NOT NULL DEFAULT 'AES_CODER';
+
+ALTER TABLE usr_users
+    ADD COLUMN encrypt_type TEXT NOT NULL DEFAULT 'AES_CODER';

@@ -1,0 +1,16 @@
+createUser:
+INSERT INTO usr_users(name, master_password)
+VALUES (:name, :masterPassword);
+
+findUserByName:
+SELECT *
+FROM usr_users
+WHERE name = :name;
+
+findUserById:
+SELECT *
+FROM usr_users
+WHERE id = :id;
+
+lastInsertRowId:
+SELECT last_insert_rowid();
