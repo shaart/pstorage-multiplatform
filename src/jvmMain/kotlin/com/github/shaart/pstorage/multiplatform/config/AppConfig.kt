@@ -14,7 +14,7 @@ class AppConfig {
         private val authService = AuthService(database.userQueries)
 
         fun init(): AppContext {
-            database.Schema.
+            // TODO database.Schema. - migrate?
             return AppContext(
                 authService = authService,
                 database = database
