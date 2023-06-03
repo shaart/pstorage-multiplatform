@@ -1,6 +1,6 @@
 createUser:
-INSERT INTO usr_users(name, master_password)
-VALUES (:name, :masterPassword);
+INSERT INTO usr_users(name, master_password, encrypt_type)
+VALUES (:name, :masterPassword, :encryptionType);
 
 findUserByName:
 SELECT *

@@ -15,7 +15,6 @@ import com.github.shaart.pstorage.multiplatform.view.AuthView
 import com.github.shaart.pstorage.multiplatform.view.MainView
 import kotlinx.coroutines.delay
 
-const val APPLICATION_NAME = "PStorage"
 val appContext: AppContext = AppConfig.init()
 
 fun main() = application {
@@ -33,7 +32,7 @@ fun main() = application {
         menu = {
             Item("Quit App", onClick = ::exitApplication)
         },
-        tooltip = APPLICATION_NAME,
+        tooltip = appContext.properties.applicationName,
         state = trayState
     )
 
@@ -84,7 +83,7 @@ fun main() = application {
     }
 
     Window(
-        title = APPLICATION_NAME,
+        title = appContext.properties.applicationName,
         onCloseRequest = ::exitApplication,
     ) {
         MainView(

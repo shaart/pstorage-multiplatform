@@ -1,6 +1,6 @@
 package com.github.shaart.pstorage.multiplatform.exception
 
-import com.github.shaart.pstorage.multiplatform.APPLICATION_NAME
+import com.github.shaart.pstorage.multiplatform.config.AppConfig
 import com.github.shaart.pstorage.multiplatform.util.ExceptionUtil
 import java.awt.Dimension
 import java.util.concurrent.Callable
@@ -11,6 +11,8 @@ import javax.swing.JTextArea
 class GlobalExceptionHandler {
 
     companion object {
+        private val applicationName: String = AppConfig.properties.applicationName
+
         fun <T> runSafely(function: Callable<T>): () -> Unit {
             return {
                 try {
@@ -25,7 +27,7 @@ class GlobalExceptionHandler {
         }
 
         private fun showErrorDialog(error: Throwable) {
-            val title = "$APPLICATION_NAME: Error"
+            val title = "$applicationName: Error"
             val message = error.message ?: "Unknown error"
             val pane = object : JOptionPane(message, ERROR_MESSAGE) {
                 // Limit width for long messages
@@ -37,7 +39,7 @@ class GlobalExceptionHandler {
         }
 
         private fun showUnexpectedErrorDialog(error: Throwable) {
-            val title = "$APPLICATION_NAME: Unexpected error"
+            val title = "$applicationName: Unexpected error"
             val message = ExceptionUtil.getStacktrace(error)
             val textArea = JTextArea(message)
             textArea.lineWrap = true
