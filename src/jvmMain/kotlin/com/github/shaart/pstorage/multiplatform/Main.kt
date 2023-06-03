@@ -15,7 +15,7 @@ import com.github.shaart.pstorage.multiplatform.view.AuthView
 import com.github.shaart.pstorage.multiplatform.view.MainView
 import kotlinx.coroutines.delay
 
-private const val APPLICATION_NAME = "PStorage"
+const val APPLICATION_NAME = "PStorage"
 val appContext: AppContext = AppConfig.init()
 
 fun main() = application {

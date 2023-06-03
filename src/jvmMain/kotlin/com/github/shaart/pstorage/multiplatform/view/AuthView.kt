@@ -14,6 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.shaart.pstorage.multiplatform.config.AppContext
+import com.github.shaart.pstorage.multiplatform.exception.GlobalExceptionHandler.Companion.runSafely
 import com.github.shaart.pstorage.multiplatform.model.LoginModel
 import com.github.shaart.pstorage.multiplatform.model.RegisterModel
 import migrations.Usr_users
@@ -59,7 +60,7 @@ fun AuthView(
             )
             Button(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
-                onClick = {
+                onClick = runSafely {
                     authService.login(LoginModel(login, password))
                 }
             ) {
@@ -70,7 +71,7 @@ fun AuthView(
 
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = {
+                onClick = runSafely {
                     val createdUser = authService.register(RegisterModel(login, password))
                     onAuthSuccess(createdUser)
                 }
@@ -80,3 +81,5 @@ fun AuthView(
         }
     }
 }
+
+
