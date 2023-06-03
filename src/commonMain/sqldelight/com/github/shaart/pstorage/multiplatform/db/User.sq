@@ -7,6 +7,11 @@ SELECT *
 FROM usr_users
 WHERE name = :name;
 
+findUserByNameAndPassword:
+SELECT *
+FROM usr_users
+WHERE name = :name AND master_password = :password;
+
 findUserById:
 SELECT *
 FROM usr_users

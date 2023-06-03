@@ -61,7 +61,8 @@ fun AuthView(
             Button(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
                 onClick = runSafely {
-                    authService.login(LoginModel(login, password))
+                    val user = authService.login(LoginModel(login, password))
+                    onAuthSuccess(user)
                 }
             ) {
                 Text("Sign in")

@@ -1,6 +1,7 @@
 package com.github.shaart.pstorage.multiplatform.service
 
 import com.github.shaart.pstorage.multiplatform.db.UserQueries
+import com.github.shaart.pstorage.multiplatform.exception.AuthNoMatchingUserException
 import com.github.shaart.pstorage.multiplatform.model.LoginModel
 import com.github.shaart.pstorage.multiplatform.model.RegisterModel
 import migrations.Usr_users
@@ -20,6 +21,7 @@ class AuthService(
     }
 
     fun login(loginModel: LoginModel): Usr_users {
-        TODO("Not yet implemented")
+        return userQueries.findUserByNameAndPassword(loginModel.login, loginModel.password)
+            .executeAsOneOrNull() ?: throw AuthNoMatchingUserException()
     }
 }

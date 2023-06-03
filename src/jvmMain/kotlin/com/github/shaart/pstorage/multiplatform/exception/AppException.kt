@@ -1,3 +1,5 @@
 package com.github.shaart.pstorage.multiplatform.exception
 
-class AppException : RuntimeException()
+open class AppException(
+    message: String
+) : RuntimeException(message)
