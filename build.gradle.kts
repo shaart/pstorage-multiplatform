@@ -9,6 +9,7 @@ plugins {
     id("org.jetbrains.compose")
     id("app.cash.sqldelight")
     kotlin("plugin.serialization")
+    id("org.flywaydb.flyway") version "9.19.1"
 }
 
 group = "com.github.shaart"
@@ -38,6 +39,8 @@ kotlin {
                 implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:$dateTimeVersion")
+                implementation("org.xerial:sqlite-jdbc:3.34.0")
+                implementation("org.flywaydb:flyway-core:9.19.1")
             }
         }
         val jvmTest by getting
@@ -72,6 +75,24 @@ sqldelight {
             packageName.set("com.github.shaart.pstorage.multiplatform.db")
             verifyMigrations.set(true)
             deriveSchemaFromMigrations.set(true)
+            // generate migration SQL files on build step
+            migrationOutputDirectory.set(file("$buildDir/generated/db/migrations"))
         }
     }
+}
+tasks.register<Copy>("copyGeneratedMigrations") {
+    val from = file("$buildDir/generated/db/migrations")
+    val into = file("$buildDir/processedResources/jvm/main/db/migrations")
+    from(from)
+    rename("(.+).sql", "V$1__migration.sql") // 1.sql -> V1__migration.sql
+    into(into)
+    dependsOn("generateCommonMainPstorageDatabaseMigrations")
+}
+tasks.withType<ProcessResources> {
+    dependsOn("copyGeneratedMigrations")
+}
+
+
+flyway {
+    locations = arrayOf("filesystem:$buildDir/generated/db/migrations")
 }

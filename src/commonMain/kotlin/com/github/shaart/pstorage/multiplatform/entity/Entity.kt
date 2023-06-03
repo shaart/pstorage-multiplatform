@@ -17,9 +17,7 @@ data class User(
     val role: Role,
     @SerialName("created_at")
     val createdAt: String
-) {
-
-}
+)
 
 @Serializable
 data class Role(
