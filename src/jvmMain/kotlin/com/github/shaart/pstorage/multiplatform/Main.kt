@@ -44,7 +44,7 @@ fun main() = application {
         icon = painterResource("assets/icons/tray/icon16.png"),
         menu = {
             Item(
-                text = "${appContext.properties.applicationName} V${appContext.properties.applicationVersion}",
+                text = "${appContext.properties.applicationName} (${appContext.properties.applicationVersion})",
                 onClick = { isShowCurrentWindow = true }
             )
             Separator()
