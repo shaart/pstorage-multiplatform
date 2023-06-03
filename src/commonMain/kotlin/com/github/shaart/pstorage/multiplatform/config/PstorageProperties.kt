@@ -2,6 +2,7 @@ package com.github.shaart.pstorage.multiplatform.config
 
 data class PstorageProperties(
     var applicationName: String = "PStorage",
+    var applicationVersion: String = "1.0.0",
     var validation: Validation = Validation(),
     var aes: Aes = Aes(),
     var database: Database = Database(),

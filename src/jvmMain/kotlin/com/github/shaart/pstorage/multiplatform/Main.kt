@@ -10,7 +10,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import com.github.shaart.pstorage.multiplatform.config.AppConfig
 import com.github.shaart.pstorage.multiplatform.config.AppContext
+import com.github.shaart.pstorage.multiplatform.dto.PasswordViewDto
 import com.github.shaart.pstorage.multiplatform.model.Authentication
+import com.github.shaart.pstorage.multiplatform.util.ClipboardUtil
 import com.github.shaart.pstorage.multiplatform.view.AuthView
 import com.github.shaart.pstorage.multiplatform.view.MainView
 import kotlinx.coroutines.delay
@@ -21,6 +23,16 @@ fun main() = application {
     var isApplicationLoading by remember { mutableStateOf(true) }
     var currentAuthentication: Authentication? by remember { mutableStateOf(null) }
     var isShowCurrentWindow by remember { mutableStateOf(true) }
+    var passwords = mutableStateOf(
+        listOf(
+            PasswordViewDto(
+                alias = "111",
+                copyValue = { ClipboardUtil.setValueToClipboard("123") }),
+            PasswordViewDto(
+                alias = "222",
+                copyValue = { ClipboardUtil.setValueToClipboard("345") }),
+        )
+    )
 
     LaunchedEffect(Unit) {
         delay(500) // TODO database migrations, resources loading
@@ -31,7 +43,17 @@ fun main() = application {
     Tray(
         icon = painterResource("assets/icons/tray/icon16.png"),
         menu = {
-            Item("Quit App", onClick = ::exitApplication)
+            Item(
+                text = "${appContext.properties.applicationName} V${appContext.properties.applicationVersion}",
+                onClick = { isShowCurrentWindow = true }
+            )
+            Separator()
+            Menu(text = "Passwords") {
+                passwords.value.forEach {
+                    Item(text = it.alias, onClick = it.copyValue)
+                }
+            }
+            Item(text = "Exit", onClick = ::exitApplication)
         },
         tooltip = appContext.properties.applicationName,
         state = trayState,
