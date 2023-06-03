@@ -20,9 +20,10 @@ val appContext: AppContext = AppConfig.init()
 fun main() = application {
     var isApplicationLoading by remember { mutableStateOf(true) }
     var currentAuthentication: Authentication? by remember { mutableStateOf(null) }
+    var isShowCurrentWindow by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
-        delay(1000) // TODO database migrations, resources loading
+        delay(500) // TODO database migrations, resources loading
         isApplicationLoading = false
     }
 
@@ -33,7 +34,8 @@ fun main() = application {
             Item("Quit App", onClick = ::exitApplication)
         },
         tooltip = appContext.properties.applicationName,
-        state = trayState
+        state = trayState,
+        onAction = { isShowCurrentWindow = true },
     )
 
     if (isApplicationLoading) {
@@ -60,7 +62,8 @@ fun main() = application {
     }
     if (currentAuthentication == null) {
         Window(
-            onCloseRequest = ::exitApplication,
+            visible = isShowCurrentWindow,
+            onCloseRequest = { isShowCurrentWindow = false },
             resizable = true,
             alwaysOnTop = false,
             state = rememberWindowState(
@@ -84,7 +87,8 @@ fun main() = application {
 
     Window(
         title = appContext.properties.applicationName,
-        onCloseRequest = ::exitApplication,
+        visible = isShowCurrentWindow,
+        onCloseRequest = { isShowCurrentWindow = false },
     ) {
         MainView(
             appContext = appContext,
