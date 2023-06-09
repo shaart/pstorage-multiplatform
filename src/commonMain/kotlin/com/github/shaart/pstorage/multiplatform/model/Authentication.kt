@@ -1,7 +1,7 @@
 package com.github.shaart.pstorage.multiplatform.model
 
-import migrations.Usr_users
+import com.github.shaart.pstorage.multiplatform.dto.UserViewDto
 
 data class Authentication(
-    val user: Usr_users
+    val user: UserViewDto,
 )

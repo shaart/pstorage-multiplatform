@@ -2,7 +2,7 @@ CREATE TABLE usr_users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT UNIQUE NOT NULL,
   master_password TEXT NOT NULL,
-  created_at TEXT DEFAULT (strftime('%Y-%m-%d %H-%M-%f','now'))
+  created_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%S','now'))
 );
 
 CREATE TABLE usr_passwords (
@@ -10,7 +10,7 @@ CREATE TABLE usr_passwords (
     user_id INTEGER NOT NULL,
     alias TEXT NOT NULL,
     encrypted_value TEXT NOT NULL,
-    created_at TEXT DEFAULT (strftime('%Y-%m-%d %H-%M-%f','now')),
+    created_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%S','now')),
     FOREIGN KEY (user_id) REFERENCES usr_users(id),
     CONSTRAINT usr_passwords_unique_user_id_alias UNIQUE (user_id, alias)
 );

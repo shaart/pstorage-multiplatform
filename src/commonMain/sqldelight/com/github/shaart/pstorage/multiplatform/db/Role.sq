@@ -1,0 +1,4 @@
+findRoleById:
+SELECT *
+FROM dct_roles
+WHERE id = :id;

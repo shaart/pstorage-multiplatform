@@ -9,33 +9,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import com.github.shaart.pstorage.multiplatform.config.AppConfig
-import com.github.shaart.pstorage.multiplatform.config.AppContext
-import com.github.shaart.pstorage.multiplatform.dto.PasswordViewDto
 import com.github.shaart.pstorage.multiplatform.model.Authentication
-import com.github.shaart.pstorage.multiplatform.util.ClipboardUtil
 import com.github.shaart.pstorage.multiplatform.view.AuthView
 import com.github.shaart.pstorage.multiplatform.view.MainView
 import kotlinx.coroutines.delay
 
-val appContext: AppContext = AppConfig.init()
-
 fun main() = application {
+    val appContext by remember { mutableStateOf(AppConfig.init(isMigrateDatabase = true)) }
     var isApplicationLoading by remember { mutableStateOf(true) }
     var currentAuthentication: Authentication? by remember { mutableStateOf(null) }
     var isShowCurrentWindow by remember { mutableStateOf(true) }
-    var passwords = mutableStateOf(
-        listOf(
-            PasswordViewDto(
-                alias = "111",
-                copyValue = { ClipboardUtil.setValueToClipboard("123") }),
-            PasswordViewDto(
-                alias = "222",
-                copyValue = { ClipboardUtil.setValueToClipboard("345") }),
-        )
-    )
 
     LaunchedEffect(Unit) {
-        delay(500) // TODO database migrations, resources loading
+        delay(500)
         isApplicationLoading = false
     }
 
@@ -49,8 +35,11 @@ fun main() = application {
             )
             Separator()
             Menu(text = "Passwords") {
-                passwords.value.forEach {
-                    Item(text = it.alias, onClick = it.copyValue)
+                currentAuthentication?.user?.passwords?.forEach {
+                    Item(
+                        text = it.alias,
+                        onClick = it.copyPasswordCommand(authentication = currentAuthentication!!)
+                    )
                 }
             }
             Item(text = "Exit", onClick = ::exitApplication)
@@ -84,6 +73,7 @@ fun main() = application {
     }
     if (currentAuthentication == null) {
         Window(
+            title = appContext.properties.applicationName,
             visible = isShowCurrentWindow,
             onCloseRequest = { isShowCurrentWindow = false },
             resizable = true,
@@ -100,7 +90,7 @@ fun main() = application {
             AuthView(
                 appContext = appContext,
                 onAuthSuccess = { user ->
-                    currentAuthentication = Authentication(user);
+                    currentAuthentication = Authentication(user)
                 }
             )
         }
@@ -113,7 +103,6 @@ fun main() = application {
         onCloseRequest = { isShowCurrentWindow = false },
     ) {
         MainView(
-            appContext = appContext,
             authentication = currentAuthentication!!
         )
     }

@@ -1,6 +1,5 @@
 package com.github.shaart.pstorage.multiplatform.view
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
@@ -14,18 +13,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.shaart.pstorage.multiplatform.config.AppContext
-import com.github.shaart.pstorage.multiplatform.exception.GlobalExceptionHandler.Companion.runSafely
+import com.github.shaart.pstorage.multiplatform.dto.UserViewDto
 import com.github.shaart.pstorage.multiplatform.model.LoginModel
 import com.github.shaart.pstorage.multiplatform.model.RegisterModel
-import migrations.Usr_users
 
 @Composable
-@Preview
 fun AuthView(
     appContext: AppContext,
-    onAuthSuccess: (Usr_users) -> Unit
+    onAuthSuccess: (UserViewDto) -> Unit,
 ) {
     val authService = appContext.authService
+    val globalExceptionHandler = appContext.globalExceptionHandler
 
     MaterialTheme {
         var login by remember { mutableStateOf("") }
@@ -60,7 +58,7 @@ fun AuthView(
             )
             Button(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
-                onClick = runSafely {
+                onClick = globalExceptionHandler.runSafely {
                     val user = authService.login(LoginModel(login, password))
                     onAuthSuccess(user)
                 }
@@ -72,7 +70,7 @@ fun AuthView(
 
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = runSafely {
+                onClick = globalExceptionHandler.runSafely {
                     val createdUser = authService.register(RegisterModel(login, password))
                     onAuthSuccess(createdUser)
                 }
