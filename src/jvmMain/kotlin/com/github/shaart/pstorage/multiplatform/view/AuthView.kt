@@ -1,5 +1,6 @@
 package com.github.shaart.pstorage.multiplatform.view
 
+import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
@@ -12,18 +13,19 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.shaart.pstorage.multiplatform.config.AppContext
+import com.github.shaart.pstorage.multiplatform.config.ApplicationContext
 import com.github.shaart.pstorage.multiplatform.dto.UserViewDto
 import com.github.shaart.pstorage.multiplatform.model.LoginModel
 import com.github.shaart.pstorage.multiplatform.model.RegisterModel
+import com.github.shaart.pstorage.multiplatform.preview.PreviewData
 
 @Composable
 fun AuthView(
-    appContext: AppContext,
+    appContext: ApplicationContext,
     onAuthSuccess: (UserViewDto) -> Unit,
 ) {
-    val authService = appContext.authService
-    val globalExceptionHandler = appContext.globalExceptionHandler
+    val authService = appContext.authService()
+    val globalExceptionHandler = appContext.globalExceptionHandler()
 
     MaterialTheme {
         var login by remember { mutableStateOf("") }
@@ -81,4 +83,11 @@ fun AuthView(
     }
 }
 
-
+@Preview
+@Composable
+fun previewAuthView() {
+    AuthView(
+        appContext = PreviewData.previewApplicationContext(),
+        onAuthSuccess = {}
+    )
+}

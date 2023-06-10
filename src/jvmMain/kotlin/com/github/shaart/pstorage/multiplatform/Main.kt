@@ -13,6 +13,7 @@ import com.github.shaart.pstorage.multiplatform.model.Authentication
 import com.github.shaart.pstorage.multiplatform.view.AuthView
 import com.github.shaart.pstorage.multiplatform.view.MainView
 import kotlinx.coroutines.delay
+import java.awt.Dimension
 
 fun main() = application {
     val appContext by remember { mutableStateOf(AppConfig.init(isMigrateDatabase = true)) }
@@ -30,7 +31,7 @@ fun main() = application {
         icon = painterResource("assets/icons/tray/icon16.png"),
         menu = {
             Item(
-                text = "${appContext.properties.applicationName} (${appContext.properties.applicationVersion})",
+                text = "${appContext.properties().applicationName} (${appContext.properties().applicationVersion})",
                 onClick = { isShowCurrentWindow = true }
             )
             Separator()
@@ -44,7 +45,7 @@ fun main() = application {
             }
             Item(text = "Exit", onClick = ::exitApplication)
         },
-        tooltip = appContext.properties.applicationName,
+        tooltip = appContext.properties().applicationName,
         state = trayState,
         onAction = { isShowCurrentWindow = true },
     )
@@ -73,7 +74,7 @@ fun main() = application {
     }
     if (currentAuthentication == null) {
         Window(
-            title = appContext.properties.applicationName,
+            title = appContext.properties().applicationName,
             visible = isShowCurrentWindow,
             onCloseRequest = { isShowCurrentWindow = false },
             resizable = true,
@@ -98,10 +99,11 @@ fun main() = application {
     }
 
     Window(
-        title = appContext.properties.applicationName,
+        title = appContext.properties().applicationName,
         visible = isShowCurrentWindow,
         onCloseRequest = { isShowCurrentWindow = false },
     ) {
+        window.minimumSize = Dimension(640, 480)
         MainView(
             authentication = currentAuthentication!!
         )

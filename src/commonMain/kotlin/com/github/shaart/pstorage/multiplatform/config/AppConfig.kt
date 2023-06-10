@@ -3,7 +3,7 @@ package com.github.shaart.pstorage.multiplatform.config
 import com.github.shaart.pstorage.multiplatform.db.PstorageDatabase
 import com.github.shaart.pstorage.multiplatform.entity.EncryptionType
 import com.github.shaart.pstorage.multiplatform.exception.GlobalExceptionHandler
-import com.github.shaart.pstorage.multiplatform.service.auth.AuthService
+import com.github.shaart.pstorage.multiplatform.service.auth.DefaultAuthService
 import com.github.shaart.pstorage.multiplatform.service.encryption.EncryptionService
 import com.github.shaart.pstorage.multiplatform.service.encryption.EncryptionServiceImpl
 import com.github.shaart.pstorage.multiplatform.service.encryption.coder.AesCoder
@@ -35,7 +35,7 @@ class AppConfig {
         private val passwordMapper = PasswordMapper(encryptionService)
         private val userMapper = UserMapper(roleMapper, passwordMapper)
 
-        private val authService = AuthService(
+        private val authService = DefaultAuthService(
             userQueries = database.userQueries,
             passwordQueries = database.passwordQueries,
             roleQueries = database.roleQueries,
@@ -43,13 +43,12 @@ class AppConfig {
             userMapper = userMapper,
         )
 
-        fun init(isMigrateDatabase: Boolean): AppContext {
+        fun init(isMigrateDatabase: Boolean): ApplicationContext {
             if (isMigrateDatabase) {
                 migrateDatabase()
             }
-            return AppContext(
+            return DefaultApplicationContext(
                 authService = authService,
-                database = database,
                 properties = properties,
                 globalExceptionHandler = globalExceptionHandler
             )

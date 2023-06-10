@@ -13,14 +13,19 @@ import com.github.shaart.pstorage.multiplatform.service.encryption.EncryptionSer
 import com.github.shaart.pstorage.multiplatform.service.mapper.UserMapper
 import migrations.Usr_users
 
-class AuthService(
+interface AuthService {
+    fun register(registerModel: RegisterModel): UserViewDto
+    fun login(loginModel: LoginModel): UserViewDto
+}
+
+class DefaultAuthService(
     private val userQueries: UserQueries,
     private val passwordQueries: PasswordQueries,
     private val roleQueries: RoleQueries,
     private val encryptionService: EncryptionService,
     private val userMapper: UserMapper,
-) {
-    fun register(registerModel: RegisterModel): UserViewDto {
+) : AuthService {
+    override fun register(registerModel: RegisterModel): UserViewDto {
         val createdUser = userQueries.transactionWithResult {
             val cryptoDto = CryptoDto(
                 value = registerModel.password,
@@ -38,7 +43,7 @@ class AuthService(
         return enrichToDto(createdUser)
     }
 
-    fun login(loginModel: LoginModel): UserViewDto {
+    override fun login(loginModel: LoginModel): UserViewDto {
         val user = userQueries.findUserByName(loginModel.login).executeAsOneOrNull()
             ?: throw AuthNoMatchingUserException()
 

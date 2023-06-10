@@ -7,33 +7,73 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
+import androidx.compose.material.Button
+import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.github.shaart.pstorage.multiplatform.dto.PasswordViewDto
-import com.github.shaart.pstorage.multiplatform.util.ClipboardUtil
-import java.util.stream.IntStream
+import com.github.shaart.pstorage.multiplatform.model.Authentication
+import com.github.shaart.pstorage.multiplatform.preview.PreviewData
+import com.github.shaart.pstorage.multiplatform.ui.table.TextTableCell
 
 @Composable
-fun PasswordsTable(passwords: List<PasswordViewDto>) {
+fun PasswordsTable(
+    authentication: Authentication,
+    modifier: Modifier = Modifier.fillMaxWidth().fillMaxHeight()
+) {
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier,
     ) {
         val columnState = rememberLazyListState()
         LazyColumn(
             state = columnState,
-
-            ) {
-            items(passwords) {
-                Box(
-                    modifier = Modifier.height(32.dp)
-                        .fillMaxWidth()
-                        .padding(start = 10.dp)
+            modifier = Modifier.padding(8.dp)
+        ) {
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    Text(text = it.alias)
+                    TextTableCell(text = "Alias", weight = .3f, title = true)
+                    TextTableCell(text = "Password", weight = .3f, title = true)
+                    TextTableCell(text = "Actions", weight = .3f, title = true)
                 }
+                Divider(
+                    color = Color.LightGray,
+                    modifier = Modifier.height(1.dp).fillMaxHeight().fillMaxWidth()
+                )
+            }
+            items(authentication.user.passwords) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(start = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    TextTableCell(text = it.alias, weight = .35f, title = true)
+                    TextTableCell(text = "***", weight = .35f, title = true)
+                    Row(
+                        modifier = Modifier.padding(start = 10.dp).weight(weight = .3f),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                    ) {
+                        Button(
+                            onClick = it.copyPasswordCommand(authentication = authentication),
+                        ) {
+                            Text("Copy to clipboard")
+                        }
+                        Button(
+                            onClick = { }, // TODO call service to delete password
+                        ) {
+                            Text("Delete")
+                        }
+                    }
+                }
+                Divider(
+                    color = Color.LightGray,
+                    modifier = Modifier.height(1.dp).fillMaxHeight().fillMaxWidth()
+                )
             }
         }
         VerticalScrollbar(
@@ -45,15 +85,10 @@ fun PasswordsTable(passwords: List<PasswordViewDto>) {
 
 @Preview
 @Composable
-fun preview() {
+fun previewPasswordsTable() {
     PasswordsTable(
-        passwords = IntStream.iterate(1) { it + 1 }
-            .limit(100)
-            .mapToObj { number ->
-                PasswordViewDto(
-                    alias = "alias$number",
-                    copyValue = { ClipboardUtil.setValueToClipboard("$number") }
-                )
-            }.toList()
+        authentication = PreviewData.previewAuthentication(
+            passwordsCount = 100
+        ),
     )
 }
