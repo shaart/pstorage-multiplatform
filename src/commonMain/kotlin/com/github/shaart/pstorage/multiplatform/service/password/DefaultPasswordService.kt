@@ -54,4 +54,56 @@ class DefaultPasswordService(
             throw AppException("Cannot delete password with alias = '$alias' because password not found for current user")
         }
     }
+
+    override fun updatePasswordValue(
+        password: PasswordViewDto,
+        newPasswordValue: String,
+        authentication: Authentication
+    ): PasswordViewDto {
+        val encryptionResult = encryptionService.encryptForUser(
+            cryptoDto = CryptoDto(value = newPasswordValue, encryptionType = null),
+            user = authentication.user,
+        )
+        val alias = password.alias
+        val affectedCount = passwordQueries.transactionWithResult {
+            passwordQueries.updateValueByUserIdAndOldAlias(
+                encryptedValue = encryptionResult.value,
+                encryptionType = encryptionResult.encryptionType.toString(),
+                userId = authentication.user.id.toLong(),
+                alias = alias,
+            )
+            passwordQueries.countAffectedRows()
+        }.executeAsOne()
+        if (affectedCount == 0L) {
+            throw AppException("Cannot update password with alias = '$alias' because password not found for current user")
+        }
+        return password.copy(
+            copyValue = passwordMapper.createCopyFunction(
+                encryptedValue = encryptionResult.value,
+                encryptionType = encryptionResult.encryptionType,
+            )
+        )
+    }
+
+    override fun updateAlias(
+        password: PasswordViewDto,
+        newAliasValue: String,
+        authentication: Authentication
+    ): PasswordViewDto {
+        val alias = password.alias
+        val affectedCount = passwordQueries.transactionWithResult {
+            passwordQueries.updateAliasByUserIdAndOldAlias(
+                userId = authentication.user.id.toLong(),
+                alias = alias,
+                newAlias = newAliasValue,
+            )
+            passwordQueries.countAffectedRows()
+        }.executeAsOne()
+        if (affectedCount == 0L) {
+            throw AppException("Cannot update password's alias for alias = '$alias' because password not found for current user")
+        }
+        return password.copy(
+            alias = newAliasValue
+        )
+    }
 }

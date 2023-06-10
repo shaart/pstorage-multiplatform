@@ -38,6 +38,28 @@ fun MainView(
                     passwordService.deletePassword(it.alias, authentication)
                     onPasswordsChange(authentication.user.passwords.minus(it))
                 },
+                onPasswordEdit = { password, newPasswordValue ->
+                    val updatedPassword =
+                        passwordService.updatePasswordValue(password, newPasswordValue, authentication)
+                    onPasswordsChange(
+                        authentication.user.passwords.stream()
+                            .filter { it.alias != password.alias }
+                            .map { it.copy() }
+                            .toList()
+                            .plus(updatedPassword)
+                    )
+                },
+                onAliasEdit = { password, newAliasValue ->
+                    val updatedPassword =
+                        passwordService.updateAlias(password, newAliasValue, authentication)
+                    onPasswordsChange(
+                        authentication.user.passwords.stream()
+                            .filter { it.alias != password.alias }
+                            .map { it.copy() }
+                            .toList()
+                            .plus(updatedPassword)
+                    )
+                },
             )
             AddPasswordRow(
                 modifier = Modifier.fillMaxWidth()

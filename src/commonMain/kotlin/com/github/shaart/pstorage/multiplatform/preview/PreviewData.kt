@@ -87,6 +87,22 @@ class PreviewData {
             override fun deletePassword(alias: String, authentication: Authentication) {
                 // do nothing
             }
+
+            override fun updatePasswordValue(
+                password: PasswordViewDto,
+                newPasswordValue: String,
+                authentication: Authentication
+            ): PasswordViewDto {
+                return password
+            }
+
+            override fun updateAlias(
+                password: PasswordViewDto,
+                newAliasValue: String,
+                authentication: Authentication
+            ): PasswordViewDto {
+                return password.copy(alias = newAliasValue)
+            }
         }
 
         fun previewPstorageProperties() = PstorageProperties()

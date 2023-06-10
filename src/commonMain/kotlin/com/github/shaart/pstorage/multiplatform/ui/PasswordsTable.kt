@@ -23,6 +23,7 @@ import com.github.shaart.pstorage.multiplatform.dto.PasswordViewDto
 import com.github.shaart.pstorage.multiplatform.exception.GlobalExceptionHandler
 import com.github.shaart.pstorage.multiplatform.model.Authentication
 import com.github.shaart.pstorage.multiplatform.preview.PreviewData
+import com.github.shaart.pstorage.multiplatform.ui.table.TableHeaderTextCell
 import com.github.shaart.pstorage.multiplatform.ui.table.TextTableCell
 
 @Composable
@@ -32,6 +33,8 @@ fun PasswordsTable(
     globalExceptionHandler: GlobalExceptionHandler,
     onPasswordDelete: (PasswordViewDto) -> Unit,
     onPasswordCopy: (PasswordViewDto) -> Unit,
+    onPasswordEdit: (PasswordViewDto, String) -> Unit,
+    onAliasEdit: (PasswordViewDto, String) -> Unit,
 ) {
     Box(
         modifier = modifier,
@@ -46,9 +49,9 @@ fun PasswordsTable(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    TextTableCell(text = "Alias", weight = .3f, title = true)
-                    TextTableCell(text = "Password", weight = .3f, title = true)
-                    TextTableCell(text = "Actions", weight = .3f, title = true)
+                    TableHeaderTextCell(text = "Alias", weight = .3f, title = true)
+                    TableHeaderTextCell(text = "Password", weight = .3f, title = true)
+                    TableHeaderTextCell(text = "Actions", weight = .3f, title = true)
                 }
                 Divider(
                     color = Color.LightGray,
@@ -61,10 +64,20 @@ fun PasswordsTable(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    TextTableCell(text = it.alias, weight = .35f, editable = true,
-                        onEdit = {})
-                    TextTableCell(text = "**********", weight = .35f, editable = true,
-                        onEdit = {})
+                    TextTableCell(
+                        text = it.alias, weight = .35f, editable = true,
+                        onEdit = { newValue ->
+                            globalExceptionHandler.runSafely { onAliasEdit(it, newValue) }()
+                        },
+                    )
+                    TextTableCell(
+                        text = "**********", weight = .35f, editable = true,
+                        shouldBeEmptyOnEditStart = true,
+                        shouldBeMasked = true,
+                        onEdit = { newValue ->
+                            globalExceptionHandler.runSafely { onPasswordEdit(it, newValue) }()
+                        },
+                    )
                     Row(
                         modifier = Modifier.padding(start = 10.dp).weight(weight = .3f),
                         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -108,5 +121,7 @@ fun previewPasswordsTable() {
         globalExceptionHandler = PreviewData.previewGlobalExceptionHandler(),
         onPasswordCopy = {},
         onPasswordDelete = {},
+        onPasswordEdit = { _, _ -> },
+        onAliasEdit = { _,_ -> },
     )
 }

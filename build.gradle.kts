@@ -49,7 +49,11 @@ kotlin {
 
 compose.desktop {
     application {
-        mainClass = "com.github.shaart.pstorage.multiplatform.MainKt"
+        mainClass =
+            if (System.getProperty("app.preview", "false") == "true")
+                "com.github.shaart.pstorage.multiplatform.PreviewMainKt"
+            else
+                "com.github.shaart.pstorage.multiplatform.MainKt"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = applicationName
