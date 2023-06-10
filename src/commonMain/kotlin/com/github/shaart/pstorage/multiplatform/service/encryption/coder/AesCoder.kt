@@ -1,6 +1,6 @@
 package com.github.shaart.pstorage.multiplatform.service.encryption.coder
 
-import com.github.shaart.pstorage.multiplatform.entity.EncryptionType
+import com.github.shaart.pstorage.multiplatform.enums.EncryptionType
 import com.github.shaart.pstorage.multiplatform.exception.CryptoException
 import java.nio.charset.StandardCharsets
 import java.security.spec.AlgorithmParameterSpec

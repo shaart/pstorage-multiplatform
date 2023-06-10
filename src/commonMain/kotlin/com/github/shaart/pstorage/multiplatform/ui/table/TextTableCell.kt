@@ -76,11 +76,7 @@ fun RowScope.TextTableCell(
         )
         IconButton(onClick = {
             isInEditionMode = true
-            if (shouldBeEmptyOnEditStart) {
-                textValue = ""
-            } else {
-                textValue = text
-            }
+            textValue = if (shouldBeEmptyOnEditStart) "" else text
         }) {
             Icon(imageVector = Icons.Filled.Edit, contentDescription = "Edit cell value")
         }

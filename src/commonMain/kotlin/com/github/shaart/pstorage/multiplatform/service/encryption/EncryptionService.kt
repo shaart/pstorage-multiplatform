@@ -1,7 +1,7 @@
 package com.github.shaart.pstorage.multiplatform.service.encryption
 
 import com.github.shaart.pstorage.multiplatform.dto.UserViewDto
-import com.github.shaart.pstorage.multiplatform.entity.EncryptionType
+import com.github.shaart.pstorage.multiplatform.enums.EncryptionType
 import com.github.shaart.pstorage.multiplatform.model.encryption.CryptoDto
 import com.github.shaart.pstorage.multiplatform.model.encryption.CryptoResult
 

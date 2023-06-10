@@ -122,6 +122,6 @@ fun previewPasswordsTable() {
         onPasswordCopy = {},
         onPasswordDelete = {},
         onPasswordEdit = { _, _ -> },
-        onAliasEdit = { _,_ -> },
+        onAliasEdit = { _, _ -> },
     )
 }

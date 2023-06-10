@@ -4,7 +4,7 @@ import com.github.shaart.pstorage.multiplatform.db.PasswordQueries
 import com.github.shaart.pstorage.multiplatform.db.RoleQueries
 import com.github.shaart.pstorage.multiplatform.db.UserQueries
 import com.github.shaart.pstorage.multiplatform.dto.UserViewDto
-import com.github.shaart.pstorage.multiplatform.entity.EncryptionType
+import com.github.shaart.pstorage.multiplatform.enums.EncryptionType
 import com.github.shaart.pstorage.multiplatform.exception.AuthNoMatchingUserException
 import com.github.shaart.pstorage.multiplatform.model.LoginModel
 import com.github.shaart.pstorage.multiplatform.model.RegisterModel

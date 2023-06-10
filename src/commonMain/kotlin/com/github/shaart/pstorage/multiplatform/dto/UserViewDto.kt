@@ -1,6 +1,6 @@
 package com.github.shaart.pstorage.multiplatform.dto
 
-import com.github.shaart.pstorage.multiplatform.entity.EncryptionType
+import com.github.shaart.pstorage.multiplatform.enums.EncryptionType
 import java.time.LocalDateTime
 
 data class UserViewDto(

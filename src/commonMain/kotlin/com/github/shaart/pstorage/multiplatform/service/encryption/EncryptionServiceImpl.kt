@@ -2,7 +2,7 @@ package com.github.shaart.pstorage.multiplatform.service.encryption
 
 import com.github.shaart.pstorage.multiplatform.config.PstorageProperties
 import com.github.shaart.pstorage.multiplatform.dto.UserViewDto
-import com.github.shaart.pstorage.multiplatform.entity.EncryptionType
+import com.github.shaart.pstorage.multiplatform.enums.EncryptionType
 import com.github.shaart.pstorage.multiplatform.exception.CryptoException
 import com.github.shaart.pstorage.multiplatform.model.encryption.CryptoDto
 import com.github.shaart.pstorage.multiplatform.model.encryption.CryptoResult
@@ -16,15 +16,11 @@ class EncryptionServiceImpl(
 ) : EncryptionService {
 
     init {
-        if (!coders.containsKey(defaultEncryptionType)) {
-            throw IllegalStateException(
-                "Coder with type $defaultEncryptionType not found in map with Coders"
-            )
+        check(coders.containsKey(defaultEncryptionType)) {
+            "Coder with type $defaultEncryptionType not found in map with Coders"
         }
-        if (!coders.keys.containsAll(EncryptionType.values().toList())) {
-            throw IllegalStateException(
-                "Received Coders don't satisfy all encryption types. Found coders: [${coders.keys}]"
-            )
+        check(coders.keys.containsAll(EncryptionType.values().toList())) {
+            "Received Coders don't satisfy all encryption types. Found coders: [${coders.keys}]"
         }
     }
 

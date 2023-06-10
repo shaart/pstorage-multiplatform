@@ -1,7 +1,7 @@
 package com.github.shaart.pstorage.multiplatform.service.mapper
 
 import com.github.shaart.pstorage.multiplatform.dto.UserViewDto
-import com.github.shaart.pstorage.multiplatform.entity.EncryptionType
+import com.github.shaart.pstorage.multiplatform.enums.EncryptionType
 import migrations.Dct_roles
 import migrations.Usr_passwords
 import migrations.Usr_users

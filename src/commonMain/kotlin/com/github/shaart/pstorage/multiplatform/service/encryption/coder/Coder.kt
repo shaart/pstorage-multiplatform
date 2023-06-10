@@ -1,6 +1,6 @@
 package com.github.shaart.pstorage.multiplatform.service.encryption.coder
 
-import com.github.shaart.pstorage.multiplatform.entity.EncryptionType
+import com.github.shaart.pstorage.multiplatform.enums.EncryptionType
 
 /**
  * Component for encrypting and decrypting with some algorithm.

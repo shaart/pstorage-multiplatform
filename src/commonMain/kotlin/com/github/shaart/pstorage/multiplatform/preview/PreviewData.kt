@@ -5,7 +5,7 @@ import com.github.shaart.pstorage.multiplatform.config.PstorageProperties
 import com.github.shaart.pstorage.multiplatform.dto.PasswordViewDto
 import com.github.shaart.pstorage.multiplatform.dto.RoleViewDto
 import com.github.shaart.pstorage.multiplatform.dto.UserViewDto
-import com.github.shaart.pstorage.multiplatform.entity.EncryptionType
+import com.github.shaart.pstorage.multiplatform.enums.EncryptionType
 import com.github.shaart.pstorage.multiplatform.exception.GlobalExceptionHandler
 import com.github.shaart.pstorage.multiplatform.model.Authentication
 import com.github.shaart.pstorage.multiplatform.model.LoginModel

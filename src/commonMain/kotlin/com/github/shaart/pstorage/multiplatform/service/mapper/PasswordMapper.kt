@@ -1,7 +1,7 @@
 package com.github.shaart.pstorage.multiplatform.service.mapper
 
 import com.github.shaart.pstorage.multiplatform.dto.PasswordViewDto
-import com.github.shaart.pstorage.multiplatform.entity.EncryptionType
+import com.github.shaart.pstorage.multiplatform.enums.EncryptionType
 import com.github.shaart.pstorage.multiplatform.model.Authentication
 import com.github.shaart.pstorage.multiplatform.model.encryption.CryptoDto
 import com.github.shaart.pstorage.multiplatform.service.encryption.EncryptionService

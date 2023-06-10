@@ -1,7 +1,7 @@
 package com.github.shaart.pstorage.multiplatform.config
 
 import com.github.shaart.pstorage.multiplatform.db.PstorageDatabase
-import com.github.shaart.pstorage.multiplatform.entity.EncryptionType
+import com.github.shaart.pstorage.multiplatform.enums.EncryptionType
 import com.github.shaart.pstorage.multiplatform.exception.GlobalExceptionHandler
 import com.github.shaart.pstorage.multiplatform.service.auth.DefaultAuthService
 import com.github.shaart.pstorage.multiplatform.service.encryption.EncryptionService
