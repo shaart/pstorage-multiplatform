@@ -47,7 +47,8 @@ fun MainView(
                     val createdPassword =
                         passwordService.createPassword(authentication, alias, rawPassword)
                     onPasswordsChange(authentication.user.passwords.plus(createdPassword))
-                }
+                },
+                globalExceptionHandler = globalExceptionHandler,
             )
         }
     }

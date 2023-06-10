@@ -18,6 +18,14 @@ class DefaultPasswordService(
         alias: String,
         rawPassword: String
     ): PasswordViewDto {
+        val isExistsInDatabase = passwordQueries.existsByAliasAndUserId(
+            alias = alias,
+            userId = authentication.user.id.toLong()
+        ).executeAsOne()
+        if (isExistsInDatabase) {
+            throw AppException("User already have password with alias = '$alias'")
+        }
+
         val passwordEncryptionParam = CryptoDto(value = rawPassword, encryptionType = null)
         val currentUser = authentication.user
         val encryptionResult = encryptionService.encryptForUser(

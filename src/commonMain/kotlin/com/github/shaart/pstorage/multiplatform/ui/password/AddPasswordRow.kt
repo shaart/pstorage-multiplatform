@@ -10,6 +10,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.github.shaart.pstorage.multiplatform.exception.GlobalExceptionHandler
+import com.github.shaart.pstorage.multiplatform.preview.PreviewData
 
 @Composable
 @Preview
@@ -17,7 +19,8 @@ fun AddPasswordRow(
     modifier: Modifier = Modifier.fillMaxWidth()
         .padding(8.dp)
         .height(70.dp),
-    onAddNewPassword: (alias: String, rawPassword: String) -> Unit
+    onAddNewPassword: (alias: String, rawPassword: String) -> Unit,
+    globalExceptionHandler: GlobalExceptionHandler,
 ) {
     MaterialTheme {
         var alias by remember { mutableStateOf("") }
@@ -51,7 +54,7 @@ fun AddPasswordRow(
                     .weight(.35f),
             )
             Button(
-                onClick = {
+                onClick = globalExceptionHandler.runSafely {
                     onAddNewPassword(alias, password)
                     alias = ""
                     password = ""
@@ -73,6 +76,7 @@ fun AddPasswordRow(
 @Composable
 fun previewAddPasswordRow() {
     AddPasswordRow(
-        onAddNewPassword = { _, _ -> }
+        onAddNewPassword = { _, _ -> },
+        globalExceptionHandler = PreviewData.previewGlobalExceptionHandler(),
     )
 }
