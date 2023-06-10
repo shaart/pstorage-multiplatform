@@ -57,8 +57,8 @@ fun PasswordsTable(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    TextTableCell(text = it.alias, weight = .35f, title = true)
-                    TextTableCell(text = "***", weight = .35f, title = true)
+                    TextTableCell(text = it.alias, weight = .35f)
+                    TextTableCell(text = "***", weight = .35f)
                     Row(
                         modifier = Modifier.padding(start = 10.dp).weight(weight = .3f),
                         horizontalArrangement = Arrangement.SpaceEvenly,
