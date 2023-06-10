@@ -13,11 +13,6 @@ import com.github.shaart.pstorage.multiplatform.service.encryption.EncryptionSer
 import com.github.shaart.pstorage.multiplatform.service.mapper.UserMapper
 import migrations.Usr_users
 
-interface AuthService {
-    fun register(registerModel: RegisterModel): UserViewDto
-    fun login(loginModel: LoginModel): UserViewDto
-}
-
 class DefaultAuthService(
     private val userQueries: UserQueries,
     private val passwordQueries: PasswordQueries,

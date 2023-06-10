@@ -6,8 +6,10 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.github.shaart.pstorage.multiplatform.dto.PasswordViewDto
 import com.github.shaart.pstorage.multiplatform.model.Authentication
 import com.github.shaart.pstorage.multiplatform.preview.PreviewData
+import com.github.shaart.pstorage.multiplatform.service.password.PasswordService
 import com.github.shaart.pstorage.multiplatform.ui.PasswordsTable
 import com.github.shaart.pstorage.multiplatform.ui.password.AddPasswordRow
 
@@ -15,6 +17,8 @@ import com.github.shaart.pstorage.multiplatform.ui.password.AddPasswordRow
 @Preview
 fun MainView(
     authentication: Authentication,
+    passwordService: PasswordService,
+    onPasswordsChange: (List<PasswordViewDto>) -> Unit,
 ) {
     MaterialTheme {
         Column(
@@ -28,6 +32,11 @@ fun MainView(
                 modifier = Modifier.fillMaxWidth()
                     .padding(8.dp)
                     .height(70.dp),
+                onAddNewPassword = { alias, rawPassword ->
+                    val createdPassword =
+                        passwordService.createPassword(authentication, alias, rawPassword)
+                    onPasswordsChange(authentication.user.passwords.plus(createdPassword))
+                }
             )
         }
     }
@@ -37,6 +46,8 @@ fun MainView(
 @Composable
 fun previewMainView() {
     MainView(
-        authentication = PreviewData.previewAuthentication(100)
+        authentication = PreviewData.previewAuthentication(100),
+        passwordService = PreviewData.previewPasswordService(),
+        onPasswordsChange = {}
     )
 }

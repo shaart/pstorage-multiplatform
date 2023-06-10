@@ -105,7 +105,11 @@ fun main() = application {
     ) {
         window.minimumSize = Dimension(640, 480)
         MainView(
-            authentication = currentAuthentication!!
+            authentication = currentAuthentication!!,
+            passwordService = appContext.passwordService(),
+            onPasswordsChange = { newPasswords ->
+                currentAuthentication = currentAuthentication?.withPasswords(newPasswords)
+            }
         )
     }
 }

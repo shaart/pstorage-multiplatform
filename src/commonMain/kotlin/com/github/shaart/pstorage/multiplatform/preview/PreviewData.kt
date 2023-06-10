@@ -11,10 +11,12 @@ import com.github.shaart.pstorage.multiplatform.model.Authentication
 import com.github.shaart.pstorage.multiplatform.model.LoginModel
 import com.github.shaart.pstorage.multiplatform.model.RegisterModel
 import com.github.shaart.pstorage.multiplatform.service.auth.AuthService
+import com.github.shaart.pstorage.multiplatform.service.password.PasswordService
 import com.github.shaart.pstorage.multiplatform.util.ClipboardUtil
 import java.time.LocalDateTime
 import java.util.stream.IntStream
 
+@Suppress("MemberVisibilityCanBePrivate")
 class PreviewData {
 
     companion object {
@@ -22,7 +24,7 @@ class PreviewData {
             user = previewUserViewDto(passwordsCount),
         )
 
-        private fun previewUserViewDto(passwordsCount: Long = 100) = UserViewDto(
+        fun previewUserViewDto(passwordsCount: Long = 100) = UserViewDto(
             id = "1",
             name = "artur",
             masterPassword = "pwd",
@@ -32,40 +34,62 @@ class PreviewData {
             passwords = previewPasswords(passwordsCount),
         )
 
-        private fun previewPasswords(passwordsCount: Long = 100): List<PasswordViewDto> =
+        fun previewPasswords(passwordsCount: Long = 100): MutableList<PasswordViewDto> =
             IntStream.iterate(1) { it + 1 }
                 .limit(passwordsCount)
-                .mapToObj { number ->
-                    PasswordViewDto(
-                        alias = "alias$number",
-                        copyValue = { ClipboardUtil.setValueToClipboard("$number") }
-                    )
-                }.toList()
+                .mapToObj { number -> previewPassword("alias$number", "$number") }
+                .toList()
+
+        fun previewPassword(alias: String, value: String) = PasswordViewDto(
+            alias = alias,
+            copyValue = { ClipboardUtil.setValueToClipboard(value) }
+        )
 
         fun previewApplicationContext(): ApplicationContext {
             return object : ApplicationContext {
                 override fun authService(): AuthService {
-                    return object : AuthService {
-                        override fun register(registerModel: RegisterModel): UserViewDto {
-                            return previewUserViewDto(100)
-                        }
-
-                        override fun login(loginModel: LoginModel): UserViewDto {
-                            return previewUserViewDto(100)
-                        }
-
-                    }
+                    return previewAuthService()
                 }
 
                 override fun properties(): PstorageProperties {
-                    return PstorageProperties()
+                    return previewPstorageProperties()
                 }
 
                 override fun globalExceptionHandler(): GlobalExceptionHandler {
-                    return GlobalExceptionHandler(properties())
+                    return previewGlobalExceptionHandler()
+                }
+
+                override fun passwordService(): PasswordService {
+                    return previewPasswordService()
                 }
 
             }
         }
+
+        fun previewPasswordService() = object : PasswordService {
+            override fun createPassword(
+                authentication: Authentication,
+                alias: String,
+                rawPassword: String
+            ): PasswordViewDto {
+                return previewPassword(alias, rawPassword)
+            }
+        }
+
+        fun previewPstorageProperties() = PstorageProperties()
+
+        fun previewAuthService() = object : AuthService {
+            override fun register(registerModel: RegisterModel): UserViewDto {
+                return previewUserViewDto(100)
+            }
+
+            override fun login(loginModel: LoginModel): UserViewDto {
+                return previewUserViewDto(100)
+            }
+        }
+
+        fun previewGlobalExceptionHandler() =
+            GlobalExceptionHandler(previewPstorageProperties())
+
     }
 }

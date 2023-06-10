@@ -16,7 +16,8 @@ import androidx.compose.ui.unit.dp
 fun AddPasswordRow(
     modifier: Modifier = Modifier.fillMaxWidth()
         .padding(8.dp)
-        .height(70.dp)
+        .height(70.dp),
+    onAddNewPassword: (alias: String, rawPassword: String) -> Unit
 ) {
     MaterialTheme {
         var alias by remember { mutableStateOf("") }
@@ -50,7 +51,11 @@ fun AddPasswordRow(
                     .weight(.35f),
             )
             Button(
-                onClick = {}, // TODO
+                onClick = {
+                    onAddNewPassword(alias, password)
+                    alias = ""
+                    password = ""
+                },
                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
                     .fillMaxWidth()
                     .fillMaxHeight()
@@ -67,5 +72,7 @@ fun AddPasswordRow(
 @Preview
 @Composable
 fun previewAddPasswordRow() {
-    AddPasswordRow()
+    AddPasswordRow(
+        onAddNewPassword = { _, _ -> }
+    )
 }
