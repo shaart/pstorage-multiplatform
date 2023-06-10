@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.github.shaart.pstorage.multiplatform.dto.PasswordViewDto
+import com.github.shaart.pstorage.multiplatform.exception.GlobalExceptionHandler
 import com.github.shaart.pstorage.multiplatform.model.Authentication
 import com.github.shaart.pstorage.multiplatform.preview.PreviewData
 import com.github.shaart.pstorage.multiplatform.service.password.PasswordService
@@ -19,6 +20,7 @@ fun MainView(
     authentication: Authentication,
     passwordService: PasswordService,
     onPasswordsChange: (List<PasswordViewDto>) -> Unit,
+    globalExceptionHandler: GlobalExceptionHandler,
 ) {
     MaterialTheme {
         Column(
@@ -26,7 +28,16 @@ fun MainView(
         ) {
             PasswordsTable(
                 authentication = authentication,
-                modifier = Modifier.fillMaxWidth().fillMaxHeight().weight(.8f)
+                modifier = Modifier.fillMaxWidth().fillMaxHeight().weight(.8f),
+                globalExceptionHandler = globalExceptionHandler,
+                onPasswordCopy = {
+                    val copyCommand = it.createCopyPasswordCommand(authentication = authentication)
+                    copyCommand()
+                },
+                onPasswordDelete = {
+                    passwordService.deletePassword(it.alias, authentication)
+                    onPasswordsChange(authentication.user.passwords.minus(it))
+                },
             )
             AddPasswordRow(
                 modifier = Modifier.fillMaxWidth()
@@ -48,6 +59,7 @@ fun previewMainView() {
     MainView(
         authentication = PreviewData.previewAuthentication(100),
         passwordService = PreviewData.previewPasswordService(),
-        onPasswordsChange = {}
+        onPasswordsChange = {},
+        globalExceptionHandler = PreviewData.previewGlobalExceptionHandler()
     )
 }

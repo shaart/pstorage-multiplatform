@@ -15,6 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.github.shaart.pstorage.multiplatform.dto.PasswordViewDto
+import com.github.shaart.pstorage.multiplatform.exception.GlobalExceptionHandler
 import com.github.shaart.pstorage.multiplatform.model.Authentication
 import com.github.shaart.pstorage.multiplatform.preview.PreviewData
 import com.github.shaart.pstorage.multiplatform.ui.table.TextTableCell
@@ -22,7 +24,10 @@ import com.github.shaart.pstorage.multiplatform.ui.table.TextTableCell
 @Composable
 fun PasswordsTable(
     authentication: Authentication,
-    modifier: Modifier = Modifier.fillMaxWidth().fillMaxHeight()
+    modifier: Modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+    globalExceptionHandler: GlobalExceptionHandler,
+    onPasswordDelete: (PasswordViewDto) -> Unit,
+    onPasswordCopy: (PasswordViewDto) -> Unit,
 ) {
     Box(
         modifier = modifier,
@@ -59,12 +64,16 @@ fun PasswordsTable(
                         horizontalArrangement = Arrangement.SpaceEvenly,
                     ) {
                         Button(
-                            onClick = it.copyPasswordCommand(authentication = authentication),
+                            onClick = globalExceptionHandler.runSafely {
+                                onPasswordCopy(it)
+                            },
                         ) {
                             Text("Copy to clipboard")
                         }
                         Button(
-                            onClick = { }, // TODO call service to delete password
+                            onClick = globalExceptionHandler.runSafely {
+                                onPasswordDelete(it)
+                            }
                         ) {
                             Text("Delete")
                         }
@@ -90,5 +99,8 @@ fun previewPasswordsTable() {
         authentication = PreviewData.previewAuthentication(
             passwordsCount = 100
         ),
+        globalExceptionHandler = PreviewData.previewGlobalExceptionHandler(),
+        onPasswordCopy = {},
+        onPasswordDelete = {},
     )
 }

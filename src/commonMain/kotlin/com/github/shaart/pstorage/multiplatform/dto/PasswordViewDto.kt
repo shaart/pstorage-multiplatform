@@ -6,7 +6,7 @@ data class PasswordViewDto(
     val alias: String,
     val copyValue: (authentication: Authentication) -> Unit,
 ) {
-    fun copyPasswordCommand(authentication: Authentication): () -> Unit {
+    fun createCopyPasswordCommand(authentication: Authentication): () -> Unit {
         return { copyValue(authentication) }
     }
 }

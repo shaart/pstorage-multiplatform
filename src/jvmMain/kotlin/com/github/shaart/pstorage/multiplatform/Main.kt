@@ -39,7 +39,7 @@ fun main() = application {
                 currentAuthentication?.user?.passwords?.forEach {
                     Item(
                         text = it.alias,
-                        onClick = it.copyPasswordCommand(authentication = currentAuthentication!!)
+                        onClick = it.createCopyPasswordCommand(authentication = currentAuthentication!!)
                     )
                 }
             }
@@ -109,7 +109,8 @@ fun main() = application {
             passwordService = appContext.passwordService(),
             onPasswordsChange = { newPasswords ->
                 currentAuthentication = currentAuthentication?.withPasswords(newPasswords)
-            }
+            },
+            globalExceptionHandler = appContext.globalExceptionHandler(),
         )
     }
 }
