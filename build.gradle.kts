@@ -35,10 +35,6 @@ kotlin {
                 implementation(compose.desktop.currentOs)
                 implementation("app.cash.sqldelight:sqlite-driver:$sqldelightVersion")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
-                implementation("io.ktor:ktor-client-core:$ktorVersion")
-                implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
-                implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
-                implementation("org.jetbrains.kotlinx:kotlinx-datetime:$dateTimeVersion")
                 implementation("org.xerial:sqlite-jdbc:3.34.0")
                 implementation("org.flywaydb:flyway-core:9.19.1")
             }
@@ -49,6 +45,10 @@ kotlin {
 
 compose.desktop {
     application {
+        buildTypes.release.proguard {
+            configurationFiles.from(project.file("proguard-rules.pro"))
+        }
+
         mainClass =
             if (System.getProperty("app.preview", "false") == "true")
                 "com.github.shaart.pstorage.multiplatform.PreviewMainKt"

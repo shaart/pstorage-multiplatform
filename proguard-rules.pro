@@ -1,0 +1,4 @@
+-dontwarn org.flywaydb.core.internal.**
+-dontwarn org.flywaydb.core.api.migration.spring.**
+-dontwarn org.flywaydb.core.api.configuration.S3ClientFactory
+-dontwarn org.flywaydb.core.Flyway
