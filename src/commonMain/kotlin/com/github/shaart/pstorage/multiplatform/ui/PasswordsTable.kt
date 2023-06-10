@@ -9,7 +9,11 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,25 +61,27 @@ fun PasswordsTable(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    TextTableCell(text = it.alias, weight = .35f)
-                    TextTableCell(text = "***", weight = .35f)
+                    TextTableCell(text = it.alias, weight = .35f, editable = true,
+                        onEdit = {})
+                    TextTableCell(text = "**********", weight = .35f, editable = true,
+                        onEdit = {})
                     Row(
                         modifier = Modifier.padding(start = 10.dp).weight(weight = .3f),
                         horizontalArrangement = Arrangement.SpaceEvenly,
                     ) {
-                        Button(
-                            onClick = globalExceptionHandler.runSafely {
-                                onPasswordCopy(it)
-                            },
-                        ) {
-                            Text("Copy to clipboard")
+                        Button(onClick = globalExceptionHandler.runSafely { onPasswordCopy(it) }) {
+                            Text("Copy")
+                            Icon(
+                                imageVector = Icons.Filled.KeyboardArrowRight,
+                                contentDescription = "Copy to clipboard",
+                            )
                         }
-                        Button(
-                            onClick = globalExceptionHandler.runSafely {
-                                onPasswordDelete(it)
-                            }
-                        ) {
+                        Button(onClick = globalExceptionHandler.runSafely { onPasswordDelete(it) }) {
                             Text("Delete")
+                            Icon(
+                                imageVector = Icons.Filled.Delete,
+                                contentDescription = "Delete password",
+                            )
                         }
                     }
                 }

@@ -14,6 +14,7 @@ import com.github.shaart.pstorage.multiplatform.service.auth.AuthService
 import com.github.shaart.pstorage.multiplatform.service.password.PasswordService
 import com.github.shaart.pstorage.multiplatform.util.ClipboardUtil
 import java.time.LocalDateTime
+import java.util.concurrent.ThreadLocalRandom
 import java.util.stream.IntStream
 
 @Suppress("MemberVisibilityCanBePrivate")
@@ -37,7 +38,15 @@ class PreviewData {
         fun previewPasswords(passwordsCount: Long = 100): MutableList<PasswordViewDto> =
             IntStream.iterate(1) { it + 1 }
                 .limit(passwordsCount)
-                .mapToObj { number -> previewPassword("alias$number", "$number") }
+                .mapToObj { number ->
+                    val repeatCount = ThreadLocalRandom.current().nextInt(0, 12)
+                    var veryRepeated = "very ".repeat(repeatCount)
+                    if (repeatCount > 0) {
+                        veryRepeated += "long "
+                    }
+                    val alias = "${veryRepeated}alias #$number"
+                    return@mapToObj previewPassword(alias = alias, value = "$number")
+                }
                 .toList()
 
         fun previewPassword(alias: String, value: String) = PasswordViewDto(
@@ -73,6 +82,10 @@ class PreviewData {
                 rawPassword: String
             ): PasswordViewDto {
                 return previewPassword(alias, rawPassword)
+            }
+
+            override fun deletePassword(alias: String, authentication: Authentication) {
+                // do nothing
             }
         }
 
