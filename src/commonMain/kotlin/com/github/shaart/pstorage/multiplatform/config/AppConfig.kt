@@ -80,6 +80,13 @@ class AppConfig {
                 .loggers("slf4j")
                 .locations(properties.flyway.locations)
                 .load()
+            if (log.isDebugEnabled) {
+                log.debug(
+                    "Found migrations in '{}': {}",
+                    properties.flyway.locations,
+                    flyway.info().all().map { it.script }
+                )
+            }
             flyway.migrate()
         }
     }

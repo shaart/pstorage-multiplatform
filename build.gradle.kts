@@ -64,6 +64,7 @@ compose.desktop {
             // For release build. List can be checked by "suggestRuntimeModules" task
             modules(
                 "java.compiler", "java.instrument", "java.sql", "jdk.unsupported",
+                "java.naming",
             )
 
             packageName = applicationName
@@ -106,7 +107,6 @@ tasks.register<Copy>("copyGeneratedMigrations") {
 tasks.withType<ProcessResources> {
     dependsOn("copyGeneratedMigrations")
 }
-
 
 flyway {
     locations = arrayOf("filesystem:$buildDir/generated/db/migrations")
