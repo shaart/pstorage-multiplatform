@@ -35,7 +35,7 @@ kotlin {
                 implementation(compose.desktop.currentOs)
                 implementation("app.cash.sqldelight:sqlite-driver:$sqldelightVersion")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
-                implementation("org.xerial:sqlite-jdbc:3.34.0")
+                implementation("org.xerial:sqlite-jdbc:3.42.0.0")
                 implementation("org.flywaydb:flyway-core:9.19.1")
             }
         }
@@ -54,10 +54,18 @@ compose.desktop {
                 "com.github.shaart.pstorage.multiplatform.PreviewMainKt"
             else
                 "com.github.shaart.pstorage.multiplatform.MainKt"
+
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+
+            // For release build. List can be checked by "suggestRuntimeModules" task
+            modules(
+                "java.compiler", "java.instrument", "java.sql", "jdk.unsupported",
+            )
+
             packageName = applicationName
             packageVersion = project.version.toString()
+
             val iconsDirPath = "src/jvmMain/resources/assets/icons/taskbar"
             val iconsDir = project.file(iconsDirPath)
             macOS {
