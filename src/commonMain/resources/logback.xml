@@ -1,0 +1,31 @@
+<configuration>
+  <property name="LOG_DIR" value="logs" />
+  <property name="LOG_FILE" value="pstorage" />
+  <property name="PATTERN" value="%d{HH:mm:ss.SSS} [userId=%X{user.id}] [%thread] %-5level %logger{36} - %msg%n" />
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>${PATTERN}</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${LOG_DIR}/${LOG_FILE}.log</file>
+    <append>true</append>
+    <encoder>
+      <pattern>${PATTERN}</pattern>
+    </encoder>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${LOG_DIR}/%d{yyyy/MM}/${LOG_FILE}.gz</fileNamePattern>
+      <totalSizeCap>1GB</totalSizeCap>
+    </rollingPolicy>
+  </appender>
+
+  <logger name="org.flywaydb" level="INFO" />
+  <logger name="org.gradle.cache.internal.DefaultFileLockManager" level="WARN" />
+
+  <root level="info">
+    <appender-ref ref="STDOUT" />
+    <appender-ref ref="FILE" />
+  </root>
+</configuration>

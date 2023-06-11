@@ -3,6 +3,7 @@ package com.github.shaart.pstorage.multiplatform.config
 import com.github.shaart.pstorage.multiplatform.db.PstorageDatabase
 import com.github.shaart.pstorage.multiplatform.enums.EncryptionType
 import com.github.shaart.pstorage.multiplatform.exception.GlobalExceptionHandler
+import com.github.shaart.pstorage.multiplatform.logger
 import com.github.shaart.pstorage.multiplatform.service.auth.DefaultAuthService
 import com.github.shaart.pstorage.multiplatform.service.encryption.EncryptionService
 import com.github.shaart.pstorage.multiplatform.service.encryption.EncryptionServiceImpl
@@ -18,6 +19,8 @@ import java.util.*
 class AppConfig {
 
     companion object {
+        private val log = logger()
+
         private val properties = PstorageProperties()
         private val databaseDriverFactory = DatabaseDriverFactory()
         private val sqlDriver = databaseDriverFactory.createDriver(properties)
@@ -52,6 +55,7 @@ class AppConfig {
 
         fun init(isMigrateDatabase: Boolean): ApplicationContext {
             if (isMigrateDatabase) {
+                log.info("Migrating database...")
                 migrateDatabase()
             }
             return DefaultApplicationContext(
@@ -69,6 +73,7 @@ class AppConfig {
                     properties.database.username,
                     properties.database.password,
                 )
+                .loggers("slf4j")
                 .locations(properties.flyway.locations)
                 .load()
             flyway.migrate()

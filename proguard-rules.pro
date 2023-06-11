@@ -5,4 +5,6 @@
 -keep class org.flywaydb.core.** { *; }
 -keep class com.google.gson.** { *; }
 -keep class org.sqlite.** { *; }
+-keep class org.slf4j.** { *; }
+-keep class ch.qos.logback.** { *; }
 -keepdirectories db/migrations/**

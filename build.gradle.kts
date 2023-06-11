@@ -37,6 +37,9 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
                 implementation("org.xerial:sqlite-jdbc:3.42.0.0")
                 implementation("org.flywaydb:flyway-core:9.19.1")
+                implementation("org.slf4j:slf4j-api:2.0.7")
+                implementation("ch.qos.logback:logback-classic:1.4.7")
+                implementation("ch.qos.logback:logback-core:1.4.7")
             }
         }
         val jvmTest by getting
