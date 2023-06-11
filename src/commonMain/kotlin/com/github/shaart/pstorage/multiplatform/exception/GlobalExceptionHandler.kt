@@ -1,6 +1,7 @@
 package com.github.shaart.pstorage.multiplatform.exception
 
 import com.github.shaart.pstorage.multiplatform.config.PstorageProperties
+import com.github.shaart.pstorage.multiplatform.logger
 import com.github.shaart.pstorage.multiplatform.util.ExceptionUtil
 import java.awt.Dimension
 import java.util.concurrent.Callable
@@ -12,6 +13,7 @@ class GlobalExceptionHandler(
     properties: PstorageProperties
 ) {
 
+    private val log = logger()
     private val applicationName: String = properties.applicationName
 
     fun <T> runSafely(function: Callable<T>): () -> Unit {
@@ -20,8 +22,14 @@ class GlobalExceptionHandler(
                 function.call()
             } catch (e: Throwable) {
                 when (e) {
-                    is AppException -> showErrorDialog(e)
-                    else -> showUnexpectedErrorDialog(e)
+                    is AppException -> {
+                        log.error("Got application error: {}", e.message)
+                        showErrorDialog(e)
+                    }
+                    else -> {
+                        log.error("Got unexpected error", e)
+                        showUnexpectedErrorDialog(e)
+                    }
                 }
             }
         }

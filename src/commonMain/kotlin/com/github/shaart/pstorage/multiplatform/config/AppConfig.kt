@@ -11,6 +11,7 @@ import com.github.shaart.pstorage.multiplatform.service.encryption.coder.AesCode
 import com.github.shaart.pstorage.multiplatform.service.mapper.PasswordMapper
 import com.github.shaart.pstorage.multiplatform.service.mapper.RoleMapper
 import com.github.shaart.pstorage.multiplatform.service.mapper.UserMapper
+import com.github.shaart.pstorage.multiplatform.service.mask.DefaultMasker
 import com.github.shaart.pstorage.multiplatform.service.password.DefaultPasswordService
 import com.github.shaart.pstorage.multiplatform.service.password.PasswordService
 import org.flywaydb.core.Flyway
@@ -40,17 +41,20 @@ class AppConfig {
         private val passwordMapper = PasswordMapper(encryptionService)
         private val userMapper = UserMapper(roleMapper, passwordMapper)
 
+        private val masker = DefaultMasker()
         private val authService = DefaultAuthService(
             userQueries = database.userQueries,
             passwordQueries = database.passwordQueries,
             roleQueries = database.roleQueries,
             encryptionService = encryptionService,
             userMapper = userMapper,
+            masker = masker,
         )
         private val passwordService: PasswordService = DefaultPasswordService(
             passwordQueries = database.passwordQueries,
             encryptionService = encryptionService,
             passwordMapper = passwordMapper,
+            masker = masker,
         )
 
         fun init(isMigrateDatabase: Boolean): ApplicationContext {

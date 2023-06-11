@@ -3,21 +3,28 @@ package com.github.shaart.pstorage.multiplatform.service.password
 import com.github.shaart.pstorage.multiplatform.db.PasswordQueries
 import com.github.shaart.pstorage.multiplatform.dto.PasswordViewDto
 import com.github.shaart.pstorage.multiplatform.exception.AppException
+import com.github.shaart.pstorage.multiplatform.logger
 import com.github.shaart.pstorage.multiplatform.model.Authentication
 import com.github.shaart.pstorage.multiplatform.model.encryption.CryptoDto
 import com.github.shaart.pstorage.multiplatform.service.encryption.EncryptionService
 import com.github.shaart.pstorage.multiplatform.service.mapper.PasswordMapper
+import com.github.shaart.pstorage.multiplatform.service.mask.Masker
 
 class DefaultPasswordService(
     private val passwordQueries: PasswordQueries,
     private val encryptionService: EncryptionService,
     private val passwordMapper: PasswordMapper,
+    private val masker: Masker,
 ) : PasswordService {
+
+    private val log = logger()
+
     override fun createPassword(
         authentication: Authentication,
         alias: String,
         rawPassword: String
     ): PasswordViewDto {
+        log.info("Creating password with alias = '{}'", masker.alias(alias))
         val isExistsInDatabase = passwordQueries.existsByAliasAndUserId(
             alias = alias,
             userId = authentication.user.id.toLong()
@@ -42,10 +49,13 @@ class DefaultPasswordService(
             val insertedId = passwordQueries.lastInsertRowId().executeAsOne()
             passwordQueries.findById(insertedId).executeAsOne()
         }
-        return passwordMapper.entityToViewDto(createdPassword)
+        return passwordMapper.entityToViewDto(createdPassword).also {
+            log.info("Successfully created password with alias = '{}'", masker.alias(alias))
+        }
     }
 
     override fun deletePassword(alias: String, authentication: Authentication) {
+        log.info("Deleting password with alias = '{}'", masker.alias(alias))
         val affectedCount = passwordQueries.transactionWithResult {
             passwordQueries.deleteByAliasAndUserId(alias, authentication.user.id.toLong())
             passwordQueries.countAffectedRows()
@@ -53,6 +63,7 @@ class DefaultPasswordService(
         if (affectedCount == 0L) {
             throw AppException("Cannot delete password with alias = '$alias' because password not found for current user")
         }
+        log.info("Successfully deleted password with alias = '{}'", masker.alias(alias))
     }
 
     override fun updatePasswordValue(
@@ -60,6 +71,7 @@ class DefaultPasswordService(
         newPasswordValue: String,
         authentication: Authentication
     ): PasswordViewDto {
+        log.info("Updating value for password with alias = '{}'", masker.alias(password.alias))
         val encryptionResult = encryptionService.encryptForUser(
             cryptoDto = CryptoDto(value = newPasswordValue, encryptionType = null),
             user = authentication.user,
@@ -82,7 +94,12 @@ class DefaultPasswordService(
                 encryptedValue = encryptionResult.value,
                 encryptionType = encryptionResult.encryptionType,
             )
-        )
+        ).also {
+            log.info(
+                "Successfully updated value for password with alias = '{}'",
+                masker.alias(password.alias)
+            )
+        }
     }
 
     override fun updateAlias(
@@ -90,6 +107,11 @@ class DefaultPasswordService(
         newAliasValue: String,
         authentication: Authentication
     ): PasswordViewDto {
+        log.info(
+            "Updating alias for password with alias = '{}' to '{}'",
+            masker.alias(password.alias),
+            masker.alias(newAliasValue)
+        )
         val alias = password.alias
         val affectedCount = passwordQueries.transactionWithResult {
             passwordQueries.updateAliasByUserIdAndOldAlias(
@@ -104,6 +126,12 @@ class DefaultPasswordService(
         }
         return password.copy(
             alias = newAliasValue
-        )
+        ).also {
+            log.info(
+                "Successfully updated alias for password with alias = '{}' to '{}'",
+                masker.alias(password.alias),
+                masker.alias(newAliasValue)
+            )
+        }
     }
 }

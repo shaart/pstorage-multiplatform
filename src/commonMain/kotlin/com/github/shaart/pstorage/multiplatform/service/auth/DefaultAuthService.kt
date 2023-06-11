@@ -6,11 +6,13 @@ import com.github.shaart.pstorage.multiplatform.db.UserQueries
 import com.github.shaart.pstorage.multiplatform.dto.UserViewDto
 import com.github.shaart.pstorage.multiplatform.enums.EncryptionType
 import com.github.shaart.pstorage.multiplatform.exception.AuthNoMatchingUserException
+import com.github.shaart.pstorage.multiplatform.logger
 import com.github.shaart.pstorage.multiplatform.model.LoginModel
 import com.github.shaart.pstorage.multiplatform.model.RegisterModel
 import com.github.shaart.pstorage.multiplatform.model.encryption.CryptoDto
 import com.github.shaart.pstorage.multiplatform.service.encryption.EncryptionService
 import com.github.shaart.pstorage.multiplatform.service.mapper.UserMapper
+import com.github.shaart.pstorage.multiplatform.service.mask.Masker
 import migrations.Usr_users
 
 class DefaultAuthService(
@@ -19,8 +21,13 @@ class DefaultAuthService(
     private val roleQueries: RoleQueries,
     private val encryptionService: EncryptionService,
     private val userMapper: UserMapper,
+    private val masker: Masker,
 ) : AuthService {
+
+    private val log = logger()
+
     override fun register(registerModel: RegisterModel): UserViewDto {
+        log.info("Registering user with name = '{}'", masker.username(registerModel.login))
         val createdUser = userQueries.transactionWithResult {
             val cryptoDto = CryptoDto(
                 value = registerModel.password,
@@ -35,10 +42,16 @@ class DefaultAuthService(
             val insertedId = userQueries.lastInsertRowId().executeAsOne()
             userQueries.findUserById(insertedId).executeAsOne()
         }
-        return enrichToDto(createdUser)
+        return enrichToDto(createdUser).also {
+            log.info(
+                "Successfully registered user with name = '{}'",
+                masker.username(registerModel.login)
+            )
+        }
     }
 
     override fun login(loginModel: LoginModel): UserViewDto {
+        log.info("Logging in to user = '{}'", masker.username(loginModel.login))
         val user = userQueries.findUserByName(loginModel.login).executeAsOneOrNull()
             ?: throw AuthNoMatchingUserException()
 
@@ -50,7 +63,9 @@ class DefaultAuthService(
         if (encryptedRequestPassword != user.master_password) {
             throw AuthNoMatchingUserException()
         }
-        return enrichToDto(user)
+        return enrichToDto(user).also {
+            log.info("Successful log in to user = '{}'", masker.username(loginModel.login))
+        }
     }
 
     private fun enrichToDto(user: Usr_users): UserViewDto {

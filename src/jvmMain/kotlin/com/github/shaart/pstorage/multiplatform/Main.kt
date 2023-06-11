@@ -13,9 +13,11 @@ import com.github.shaart.pstorage.multiplatform.model.Authentication
 import com.github.shaart.pstorage.multiplatform.view.AuthView
 import com.github.shaart.pstorage.multiplatform.view.MainView
 import kotlinx.coroutines.delay
+import org.slf4j.MDC
 import java.awt.Dimension
 
 fun main() = application {
+    val log by remember { mutableStateOf(logger()) }
     val appContext by remember { mutableStateOf(AppConfig.init(isMigrateDatabase = true)) }
     var isApplicationLoading by remember { mutableStateOf(true) }
     var currentAuthentication: Authentication? by remember { mutableStateOf(null) }
@@ -92,6 +94,8 @@ fun main() = application {
                 appContext = appContext,
                 onAuthSuccess = { user ->
                     currentAuthentication = Authentication(user)
+                    MDC.put("userId", user.id)
+                    log.info("Successfully logged with userId = ${user.id}")
                 }
             )
         }
