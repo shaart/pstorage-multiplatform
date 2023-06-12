@@ -30,6 +30,7 @@ If it's your first log in - table will be empty.
 
 Else you will see information about your passwords as on screenshot below.
 ![Main view](docs/main_view_with_passwords.png)
+
 On screenshot:
 
 1. Column of passwords' aliases that you will see in System Tray passwords menu. On the right side
