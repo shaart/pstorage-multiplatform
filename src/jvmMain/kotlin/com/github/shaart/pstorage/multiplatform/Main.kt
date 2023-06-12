@@ -10,8 +10,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import com.github.shaart.pstorage.multiplatform.config.AppConfig
 import com.github.shaart.pstorage.multiplatform.model.Authentication
-import com.github.shaart.pstorage.multiplatform.view.AuthView
-import com.github.shaart.pstorage.multiplatform.view.MainView
+import com.github.shaart.pstorage.multiplatform.ui.AuthView
+import com.github.shaart.pstorage.multiplatform.ui.MainView
 import kotlinx.coroutines.delay
 import org.slf4j.MDC
 import java.awt.Dimension

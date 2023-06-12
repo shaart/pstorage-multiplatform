@@ -1,4 +1,4 @@
-package com.github.shaart.pstorage.multiplatform.view
+package com.github.shaart.pstorage.multiplatform.ui
 
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.ExperimentalMaterialApi

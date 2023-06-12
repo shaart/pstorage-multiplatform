@@ -1,4 +1,4 @@
-package com.github.shaart.pstorage.multiplatform.view
+package com.github.shaart.pstorage.multiplatform.ui
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*

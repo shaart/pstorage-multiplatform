@@ -1,4 +1,4 @@
-package com.github.shaart.pstorage.multiplatform.view
+package com.github.shaart.pstorage.multiplatform.ui
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
@@ -11,7 +11,7 @@ import com.github.shaart.pstorage.multiplatform.exception.GlobalExceptionHandler
 import com.github.shaart.pstorage.multiplatform.model.Authentication
 import com.github.shaart.pstorage.multiplatform.preview.PreviewData
 import com.github.shaart.pstorage.multiplatform.service.password.PasswordService
-import com.github.shaart.pstorage.multiplatform.ui.PasswordsTable
+import com.github.shaart.pstorage.multiplatform.ui.password.PasswordsTable
 import com.github.shaart.pstorage.multiplatform.ui.password.AddPasswordRow
 
 @Composable
