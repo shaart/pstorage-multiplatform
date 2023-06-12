@@ -82,14 +82,21 @@ fun PasswordsTable(
                         modifier = Modifier.padding(start = 10.dp).weight(weight = .3f),
                         horizontalArrangement = Arrangement.SpaceEvenly,
                     ) {
-                        Button(onClick = globalExceptionHandler.runSafely { onPasswordCopy(it) }) {
+                        Button(
+                            onClick = globalExceptionHandler.runSafely { onPasswordCopy(it) },
+                            modifier = Modifier.weight(weight = .48f)
+                        ) {
                             Text("Copy")
                             Icon(
                                 imageVector = Icons.Filled.KeyboardArrowRight,
                                 contentDescription = "Copy to clipboard",
                             )
                         }
-                        Button(onClick = globalExceptionHandler.runSafely { onPasswordDelete(it) }) {
+                        Spacer(modifier = Modifier.weight(weight = .04f))
+                        Button(
+                            onClick = globalExceptionHandler.runSafely { onPasswordDelete(it) },
+                            modifier = Modifier.weight(weight = .48f)
+                        ) {
                             Text("Delete")
                             Icon(
                                 imageVector = Icons.Filled.Delete,
