@@ -25,6 +25,9 @@ class DefaultPasswordService(
         rawPassword: String
     ): PasswordViewDto {
         log.info("Creating password with alias = '{}'", masker.alias(alias))
+        if (alias.isBlank()) {
+            throw AppException("Alias should not be blank")
+        }
         val isExistsInDatabase = passwordQueries.existsByAliasAndUserId(
             alias = alias,
             userId = authentication.user.id.toLong()
@@ -112,6 +115,9 @@ class DefaultPasswordService(
             masker.alias(password.alias),
             masker.alias(newAliasValue)
         )
+        if (newAliasValue.isBlank()) {
+            throw AppException("Alias should not be blank")
+        }
         val alias = password.alias
         val affectedCount = passwordQueries.transactionWithResult {
             passwordQueries.updateAliasByUserIdAndOldAlias(
