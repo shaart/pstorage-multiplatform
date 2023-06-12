@@ -7,10 +7,16 @@ SELECT *
 FROM usr_users
 WHERE name = :name;
 
+existsUserByName:
+SELECT EXISTS(SELECT *
+              FROM usr_users
+              WHERE name = :name);
+
 findUserByNameAndPassword:
 SELECT *
 FROM usr_users
-WHERE name = :name AND master_password = :password;
+WHERE name = :name
+  AND master_password = :password;
 
 findUserById:
 SELECT *

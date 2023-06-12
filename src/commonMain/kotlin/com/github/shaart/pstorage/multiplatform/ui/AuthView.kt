@@ -1,13 +1,16 @@
 package com.github.shaart.pstorage.multiplatform.ui
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.input.key.*
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -19,6 +22,7 @@ import com.github.shaart.pstorage.multiplatform.model.LoginModel
 import com.github.shaart.pstorage.multiplatform.model.RegisterModel
 import com.github.shaart.pstorage.multiplatform.preview.PreviewData
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AuthView(
     appContext: ApplicationContext,
@@ -30,10 +34,39 @@ fun AuthView(
     MaterialTheme {
         var login by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
+        val focusManager = LocalFocusManager.current
+
+        val logInButtonInteractionSource = remember { MutableInteractionSource() }
+        val isLogInFocused by logInButtonInteractionSource.collectIsFocusedAsState()
+        val logInButtonColor =
+            if (isLogInFocused) MaterialTheme.colors.secondary
+            else MaterialTheme.colors.primary
+
+        val signUpButtonInteractionSource = remember { MutableInteractionSource() }
+        val isSignUpFocused by signUpButtonInteractionSource.collectIsFocusedAsState()
+        val signUpButtonColor =
+            if (isSignUpFocused) MaterialTheme.colors.secondary
+            else MaterialTheme.colors.primary
+
+        val logInFunction: () -> Unit = globalExceptionHandler.runSafely {
+            val user = authService.login(LoginModel(login, password))
+            onAuthSuccess(user)
+        }
 
         Column(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.Center
+            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)
+                .onKeyEvent {
+                    if ((it.key == Key.Tab) && it.type == KeyEventType.KeyDown) {
+                        if (it.isShiftPressed) {
+                            focusManager.moveFocus(FocusDirection.Previous)
+                        } else {
+                            focusManager.moveFocus(FocusDirection.Next)
+                        }
+                        return@onKeyEvent true
+                    }
+                    false
+                },
+            verticalArrangement = Arrangement.Center,
         ) {
             Text(
                 text = "Authorization",
@@ -46,7 +79,15 @@ fun AuthView(
                 value = login,
                 label = { Text("Login") },
                 onValueChange = { login = it },
+                singleLine = true,
                 modifier = Modifier.fillMaxWidth()
+                    .onKeyEvent {
+                        if ((it.key == Key.Enter) && it.type == KeyEventType.KeyDown) {
+                            logInFunction()
+                            return@onKeyEvent true
+                        }
+                        false
+                    },
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -56,14 +97,23 @@ fun AuthView(
                 label = { Text("Password") },
                 onValueChange = { password = it },
                 visualTransformation = PasswordVisualTransformation(),
+                singleLine = true,
                 modifier = Modifier.fillMaxWidth()
+                    .onKeyEvent {
+                        if ((it.key == Key.Enter) && it.type == KeyEventType.KeyDown) {
+                            logInFunction()
+                            return@onKeyEvent true
+                        }
+                        false
+                    },
             )
             Button(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
-                onClick = globalExceptionHandler.runSafely {
-                    val user = authService.login(LoginModel(login, password))
-                    onAuthSuccess(user)
-                }
+                onClick = logInFunction,
+                interactionSource = logInButtonInteractionSource,
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = logInButtonColor
+                )
             ) {
                 Text("Sign in")
             }
@@ -75,7 +125,11 @@ fun AuthView(
                 onClick = globalExceptionHandler.runSafely {
                     val createdUser = authService.register(RegisterModel(login, password))
                     onAuthSuccess(createdUser)
-                }
+                },
+                interactionSource = signUpButtonInteractionSource,
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = signUpButtonColor
+                )
             ) {
                 Text("Sign up")
             }

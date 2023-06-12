@@ -7,12 +7,15 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.*
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.github.shaart.pstorage.multiplatform.exception.GlobalExceptionHandler
 import com.github.shaart.pstorage.multiplatform.preview.PreviewData
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 @Preview
 fun AddPasswordRow(
@@ -25,6 +28,12 @@ fun AddPasswordRow(
     MaterialTheme {
         var alias by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
+
+        val addNewPasswordFunction: () -> Unit = globalExceptionHandler.runSafely {
+            onAddNewPassword(alias, password)
+            alias = ""
+            password = ""
+        }
 
         Row(
             modifier = modifier,
@@ -51,14 +60,17 @@ fun AddPasswordRow(
                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
                     .fillMaxWidth()
                     .fillMaxHeight()
-                    .weight(.35f),
+                    .weight(.35f)
+                    .onKeyEvent {
+                        if ((it.key == Key.Enter) && it.type == KeyEventType.KeyDown) {
+                            addNewPasswordFunction()
+                            return@onKeyEvent true
+                        }
+                        false
+                    },
             )
             Button(
-                onClick = globalExceptionHandler.runSafely {
-                    onAddNewPassword(alias, password)
-                    alias = ""
-                    password = ""
-                },
+                onClick = addNewPasswordFunction,
                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
                     .fillMaxWidth()
                     .fillMaxHeight()

@@ -5,6 +5,7 @@ import com.github.shaart.pstorage.multiplatform.db.RoleQueries
 import com.github.shaart.pstorage.multiplatform.db.UserQueries
 import com.github.shaart.pstorage.multiplatform.dto.UserViewDto
 import com.github.shaart.pstorage.multiplatform.enums.EncryptionType
+import com.github.shaart.pstorage.multiplatform.exception.AppException
 import com.github.shaart.pstorage.multiplatform.exception.AuthNoMatchingUserException
 import com.github.shaart.pstorage.multiplatform.logger
 import com.github.shaart.pstorage.multiplatform.model.LoginModel
@@ -28,6 +29,11 @@ class DefaultAuthService(
 
     override fun register(registerModel: RegisterModel): UserViewDto {
         log.info("Registering user with name = '{}'", masker.username(registerModel.login))
+        val existsUserByName = userQueries.existsUserByName(registerModel.login).executeAsOne()
+        if (existsUserByName) {
+            throw AppException("User with that name already present")
+        }
+
         val createdUser = userQueries.transactionWithResult {
             val cryptoDto = CryptoDto(
                 value = registerModel.password,
