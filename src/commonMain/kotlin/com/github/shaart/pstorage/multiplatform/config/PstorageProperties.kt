@@ -1,12 +1,38 @@
 package com.github.shaart.pstorage.multiplatform.config
 
+import java.util.*
+
 data class PstorageProperties(
-    var applicationName: String = "PStorage",
-    var applicationVersion: String = "1.0.0",
+    var applicationName: String = "pstorage",
+    var version: Version = Version(),
     var validation: Validation = Validation(),
     var database: Database = Database(),
     var flyway: FlywayProperties = FlywayProperties(),
     var ui: UiProperties = UiProperties(),
+) {
+    fun populate(gitProperties: Properties) {
+        version.git = Git(
+            branch = gitProperties["git.branch"].toString(),
+            buildVersion = gitProperties["git.build.version"].toString(),
+            tag = gitProperties["git.closest.tag.name"].toString(),
+            commitId = gitProperties["git.commit.id"].toString(),
+            commitIdAbbrev = gitProperties["git.commit.id.abbrev"].toString(),
+            commitTime = gitProperties["git.commit.time"].toString(),
+        )
+    }
+}
+
+data class Version(
+    var git: Git = Git(),
+)
+
+data class Git(
+    var branch: String = "unknown",
+    var buildVersion: String = "unknown",
+    var tag: String = "unknown",
+    var commitId: String = "unknown",
+    var commitIdAbbrev: String = "unknown",
+    var commitTime: String = "unknown",
 )
 
 data class Validation(

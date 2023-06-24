@@ -33,7 +33,7 @@ fun main() = application {
         icon = painterResource("assets/icons/tray/icon16.png"),
         menu = {
             Item(
-                text = "${appContext.properties().applicationName} (${appContext.properties().applicationVersion})",
+                text = "${appContext.properties().applicationName} (${appContext.properties().version.git.buildVersion})",
                 onClick = { isShowCurrentWindow = true }
             )
             Separator()
@@ -77,7 +77,7 @@ fun main() = application {
     }
     if (currentAuthentication == null) {
         Window(
-            title = appContext.properties().applicationName,
+            title = "${appContext.properties().applicationName} (${appContext.properties().version.git.buildVersion})",
             visible = isShowCurrentWindow,
             onCloseRequest = { isShowCurrentWindow = false },
             resizable = true,
@@ -105,7 +105,7 @@ fun main() = application {
     }
 
     Window(
-        title = appContext.properties().applicationName,
+        title = "${appContext.properties().applicationName} (${appContext.properties().version.git.buildVersion})",
         visible = isShowCurrentWindow,
         onCloseRequest = { isShowCurrentWindow = false },
         icon = painterResource(appContext.properties().ui.taskbarIconPath),

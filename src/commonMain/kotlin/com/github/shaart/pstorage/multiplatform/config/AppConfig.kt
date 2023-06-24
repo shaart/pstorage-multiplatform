@@ -27,7 +27,15 @@ class AppConfig {
     companion object {
         private val log = logger()
 
-        private val properties = PstorageProperties()
+        private val properties = PstorageProperties().also {
+            val gitProperties = Properties()
+            val gitPropertiesStream =
+                AppConfig::class.java.classLoader.getResourceAsStream("git.properties")
+            if (gitPropertiesStream != null) {
+                gitProperties.load(gitPropertiesStream)
+                it.populate(gitProperties)
+            }
+        }
         private val databaseDriverFactory = DatabaseDriverFactory()
         private val sqlDriver = databaseDriverFactory.createDriver(properties)
         private val database = PstorageDatabase(sqlDriver)
@@ -71,6 +79,7 @@ class AppConfig {
         )
 
         fun init(isMigrateDatabase: Boolean): ApplicationContext {
+            log.info("Loading application with version: {}", properties.version)
             if (isMigrateDatabase) {
                 log.info("Migrating database...")
                 migrateDatabase()
