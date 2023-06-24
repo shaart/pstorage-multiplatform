@@ -62,8 +62,8 @@ On screenshot:
 
 1. Download release build for your system.
 2. Run installation file.
-3. Open `pstorage-multiplatform.exe` in the root of installed directory. Be free to move it to
-   another place of to another PC as whole directory.
+3. Open `pstorage-multiplatform.exe` in the root of installed directory. Be free to move 
+   application to another place or to another PC as whole directory.
 
 ## How to build
 
