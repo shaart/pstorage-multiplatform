@@ -3,6 +3,7 @@ package com.github.shaart.pstorage.multiplatform.service.auth
 import com.github.shaart.pstorage.multiplatform.db.PasswordQueries
 import com.github.shaart.pstorage.multiplatform.db.RoleQueries
 import com.github.shaart.pstorage.multiplatform.db.UserQueries
+import com.github.shaart.pstorage.multiplatform.db.UserSettingQueries
 import com.github.shaart.pstorage.multiplatform.dto.UserViewDto
 import com.github.shaart.pstorage.multiplatform.enums.EncryptionType
 import com.github.shaart.pstorage.multiplatform.exception.AppException
@@ -20,6 +21,7 @@ import migrations.Usr_users
 class DefaultAuthService(
     private val userQueries: UserQueries,
     private val passwordQueries: PasswordQueries,
+    private val userSettingQueries: UserSettingQueries,
     private val roleQueries: RoleQueries,
     private val encryptionService: EncryptionService,
     private val userMapper: UserMapper,
@@ -88,11 +90,13 @@ class DefaultAuthService(
     private fun enrichToDto(user: Usr_users, encryptedMasterPassword: CryptoResult): UserViewDto {
         val passwords = passwordQueries.findAllByUserId(user.id).executeAsList()
         val role = roleQueries.findRoleById(user.role_id).executeAsOne()
+        val settings =  userSettingQueries.findAllSettingsByUserId(user.id).executeAsList()
         return userMapper.entityToViewDto(
             user = user,
             passwords = passwords,
             role = role,
             encryptedMasterPassword = encryptedMasterPassword,
+            settings = settings,
         )
     }
 }

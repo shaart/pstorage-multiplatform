@@ -9,9 +9,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import com.github.shaart.pstorage.multiplatform.config.AppConfig
+import com.github.shaart.pstorage.multiplatform.enums.AppSettings
 import com.github.shaart.pstorage.multiplatform.model.Authentication
 import com.github.shaart.pstorage.multiplatform.ui.AuthView
 import com.github.shaart.pstorage.multiplatform.ui.MainView
+import com.github.shaart.pstorage.multiplatform.ui.SettingsView
 import kotlinx.coroutines.delay
 import org.slf4j.MDC
 import java.awt.Dimension
@@ -20,9 +22,9 @@ fun main() = application {
     val log by remember { mutableStateOf(logger()) }
     val appContext by remember { mutableStateOf(AppConfig.init(isMigrateDatabase = true)) }
     var isApplicationLoading by remember { mutableStateOf(true) }
-    var shouldDisplayNotificationOnHideToTray by remember { mutableStateOf(true) }
     var currentAuthentication: Authentication? by remember { mutableStateOf(null) }
     var isShowCurrentWindow by remember { mutableStateOf(true) }
+    var isShowSettingsWindow by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         delay(500)
@@ -40,20 +42,26 @@ fun main() = application {
                 onClick = { isShowCurrentWindow = true }
             )
             Separator()
-            CheckboxItem(
-                text = "Notify about hiding to tray",
-                checked = shouldDisplayNotificationOnHideToTray,
-                onCheckedChange = { shouldDisplayNotificationOnHideToTray = it }
+            Menu(text = "Passwords", enabled = currentAuthentication != null) {
+                val passwords = currentAuthentication?.user?.passwords ?: emptyList()
+                if (passwords.isEmpty()) {
+                    Item(text = "No passwords found", enabled = false, onClick = {})
+                } else {
+                    passwords.forEach {
+                        Item(
+                            text = it.alias,
+                            onClick = it.createCopyPasswordCommand(authentication = currentAuthentication!!)
+                        )
+                    }
+                }
+            }
+            Separator()
+            Item(
+                text = "User settings",
+                onClick = { isShowSettingsWindow = true },
+                enabled = currentAuthentication != null,
             )
             Separator()
-            Menu(text = "Passwords") {
-                currentAuthentication?.user?.passwords?.forEach {
-                    Item(
-                        text = it.alias,
-                        onClick = it.createCopyPasswordCommand(authentication = currentAuthentication!!)
-                    )
-                } ?: Item(text = "No passwords found", enabled = false, onClick = {})
-            }
             Item(text = "Exit", onClick = ::exitApplication)
         },
         tooltip = applicationNameWithVersion,
@@ -64,7 +72,9 @@ fun main() = application {
     val onCloseCommonWindow = {
         isShowCurrentWindow = false
 
-        if (shouldDisplayNotificationOnHideToTray) {
+        if (AppSettings.TRAY_NOTIFICATION_ON_CLOSE.isEnabled(currentAuthentication?.user)
+                .toBoolean()
+        ) {
             trayState.sendNotification(
                 Notification(
                     title = applicationNameWithVersion,
@@ -120,11 +130,37 @@ fun main() = application {
                 onAuthSuccess = { user ->
                     currentAuthentication = Authentication(user)
                     MDC.put("userId", user.id)
-                    log.info("Successfully logged with userId = ${user.id}")
+                    log.info("Successfully logged with userId = {}", user.id)
+                    log.debug("Found settings: {}", user.settings)
                 }
             )
         }
         return@application
+    }
+
+    Window(
+        title = "$applicationNameWithVersion - Settings",
+        visible = isShowSettingsWindow,
+        onCloseRequest = { isShowSettingsWindow = false },
+        resizable = true,
+        alwaysOnTop = false,
+        state = rememberWindowState(
+            position = WindowPosition(Alignment.Center),
+            width = 640.dp,
+            height = 480.dp,
+        ),
+        undecorated = false,
+        transparent = false,
+        enabled = true,
+        icon = painterResource(appContext.properties().ui.taskbarIconPath),
+    ) {
+        SettingsView(
+            appContext = appContext,
+            authentication = currentAuthentication!!,
+            onSettingsChange = { newSettings ->
+                currentAuthentication = currentAuthentication?.withSettings(newSettings)
+            }
+        )
     }
 
     Window(

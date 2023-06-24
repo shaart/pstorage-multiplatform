@@ -1,0 +1,31 @@
+createSetting:
+INSERT INTO usr_settings(user_id, name, value, setting_type)
+VALUES (:userId, :name, :value, :settingType);
+
+updateSettingByUserIdAndName:
+UPDATE usr_settings
+    SET value = :value,
+        updated_at = (strftime('%Y-%m-%dT%H:%M:%S','now'))
+WHERE name = :name AND user_id = :userId;
+
+findAllSettingsByUserId:
+SELECT *
+FROM usr_settings
+WHERE user_id = :userId;
+
+existsByNameAndUserId:
+SELECT EXISTS(SELECT id
+              FROM usr_settings
+              WHERE user_id = :userId
+                AND name = :name);
+
+findById:
+SELECT *
+FROM usr_settings
+WHERE id = :id;
+
+lastInsertRowId:
+SELECT last_insert_rowid();
+
+countAffectedRows:
+SELECT changes();
