@@ -70,6 +70,7 @@ compose.desktop {
 
             packageName = applicationName
             packageVersion = project.version.toString()
+            licenseFile.set(project.file("LICENSE"))
 
             val iconsDirPath = "src/jvmMain/resources/assets/icons/taskbar"
             val iconsDir = project.file(iconsDirPath)
