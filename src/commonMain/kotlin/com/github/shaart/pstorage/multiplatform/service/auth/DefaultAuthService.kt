@@ -49,7 +49,7 @@ class DefaultAuthService(
             value = registerModel.password,
             encryptionType = null
         )
-        val encryptedMasterPassword = encryptionService.encrypt(cryptoDto)
+        val encryptedMasterPassword = encryptionService.encryptForInMemory(cryptoDto)
         return enrichToDto(createdUser, encryptedMasterPassword).also {
             log.info(
                 "Successfully registered user with name = '{}'",
@@ -79,7 +79,7 @@ class DefaultAuthService(
             value = loginModel.password,
             encryptionType = null,
         )
-        val encryptedRequestPassword = encryptionService.encrypt(cryptoDto)
+        val encryptedRequestPassword = encryptionService.encryptForInMemory(cryptoDto)
         return enrichToDto(user, encryptedRequestPassword).also {
             log.info("Successful log in to user = '{}'", masker.username(loginModel.login))
         }

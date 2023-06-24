@@ -15,7 +15,7 @@ interface EncryptionService {
      * @param cryptoDto a value to be encrypted
      * @return encrypted value
      */
-    fun encrypt(cryptoDto: CryptoDto): CryptoResult
+    fun encryptForInMemory(cryptoDto: CryptoDto): CryptoResult
 
     /**
      * Encrypts a value using key.
@@ -41,7 +41,7 @@ interface EncryptionService {
      * @param cryptoDto a value to be decrypted
      * @return decrypted value
      */
-    fun decrypt(cryptoDto: CryptoDto): CryptoResult
+    fun decryptForInMemory(cryptoDto: CryptoDto): CryptoResult
 
     /**
      * Decrypts a value using key.

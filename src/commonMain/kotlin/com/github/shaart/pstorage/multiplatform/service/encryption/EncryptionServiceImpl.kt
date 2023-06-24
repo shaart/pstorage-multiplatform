@@ -1,6 +1,6 @@
 package com.github.shaart.pstorage.multiplatform.service.encryption
 
-import com.github.shaart.pstorage.multiplatform.config.PstorageProperties
+import com.github.shaart.pstorage.multiplatform.context.SecurityContext
 import com.github.shaart.pstorage.multiplatform.dto.UserViewDto
 import com.github.shaart.pstorage.multiplatform.enums.EncryptionType
 import com.github.shaart.pstorage.multiplatform.exception.CryptoException
@@ -11,10 +11,10 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import java.util.*
 
 class EncryptionServiceImpl(
-    private val properties: PstorageProperties,
     private val coders: EnumMap<EncryptionType, Coder>,
     private val defaultEncryptionType: EncryptionType,
     private val passwordEncoder: PasswordEncoder,
+    private val securityContext: SecurityContext,
 ) : EncryptionService {
 
     init {
@@ -26,8 +26,8 @@ class EncryptionServiceImpl(
         }
     }
 
-    override fun encrypt(cryptoDto: CryptoDto): CryptoResult {
-        val key: String = properties.aes.common.key
+    override fun encryptForInMemory(cryptoDto: CryptoDto): CryptoResult {
+        val key: String = securityContext.currentEncodingKey()
         return encrypt(cryptoDto, key)
     }
 
@@ -46,12 +46,12 @@ class EncryptionServiceImpl(
             value = user.masterPassword,
             encryptionType = user.encryptionType
         )
-        val decryptedMasterPassword: String = decrypt(masterPasswordParam).value
+        val decryptedMasterPassword: String = decryptForInMemory(masterPasswordParam).value
         return encrypt(cryptoDto = cryptoDto, key = decryptedMasterPassword)
     }
 
-    override fun decrypt(cryptoDto: CryptoDto): CryptoResult {
-        val key: String = properties.aes.common.key
+    override fun decryptForInMemory(cryptoDto: CryptoDto): CryptoResult {
+        val key: String = securityContext.currentEncodingKey()
         return decrypt(cryptoDto = cryptoDto, key = key)
     }
 
@@ -74,7 +74,7 @@ class EncryptionServiceImpl(
             value = encryptedMasterPassword,
             encryptionType = encryptionType
         )
-        val decryptedMasterPassword: String = decrypt(masterPasswordParam).value
+        val decryptedMasterPassword: String = decryptForInMemory(masterPasswordParam).value
         return decrypt(
             cryptoDto = value,
             key = decryptedMasterPassword

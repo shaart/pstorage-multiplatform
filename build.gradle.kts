@@ -47,7 +47,18 @@ kotlin {
             }
         }
         val jvmTest by getting
+        val commonTest by getting {
+            dependencies {
+                implementation("org.junit.jupiter:junit-jupiter-api:5.9.3")
+                runtimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.3")
+                implementation("org.assertj:assertj-core:3.6.1")
+            }
+        }
     }
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
 
 compose.desktop {
