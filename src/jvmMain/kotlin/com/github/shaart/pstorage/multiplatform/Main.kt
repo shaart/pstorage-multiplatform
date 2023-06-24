@@ -65,6 +65,7 @@ fun main() = application {
             undecorated = true,
             transparent = false,
             enabled = false,
+            icon = painterResource(appContext.properties().ui.taskbarIconPath),
         ) {
             Image(
                 painter = painterResource("assets/splash.png"),
@@ -89,6 +90,7 @@ fun main() = application {
             undecorated = false,
             transparent = false,
             enabled = true,
+            icon = painterResource(appContext.properties().ui.taskbarIconPath),
         ) {
             AuthView(
                 appContext = appContext,
@@ -106,6 +108,7 @@ fun main() = application {
         title = appContext.properties().applicationName,
         visible = isShowCurrentWindow,
         onCloseRequest = { isShowCurrentWindow = false },
+        icon = painterResource(appContext.properties().ui.taskbarIconPath),
     ) {
         window.minimumSize = Dimension(640, 480)
         MainView(

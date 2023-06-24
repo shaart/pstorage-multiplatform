@@ -85,6 +85,7 @@ compose.desktop {
                 perUserInstall = true
                 dirChooser = true
                 upgradeUuid = "83D7C93F-CD22-4CC8-B259-4B95C4AC063F"
+                menuGroup = applicationName
             }
         }
     }

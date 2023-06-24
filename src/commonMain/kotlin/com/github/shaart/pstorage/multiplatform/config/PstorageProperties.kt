@@ -7,6 +7,7 @@ data class PstorageProperties(
     var aes: Aes = Aes(),
     var database: Database = Database(),
     var flyway: FlywayProperties = FlywayProperties(),
+    var ui: UiProperties = UiProperties(),
 )
 
 data class Validation(
@@ -47,4 +48,7 @@ data class Database(
 )
 data class FlywayProperties(
     var locations: String = "classpath:db/migrations",
+)
+data class UiProperties(
+    var taskbarIconPath: String = "assets/icons/taskbar/icon64.png",
 )
