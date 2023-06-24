@@ -20,6 +20,7 @@ fun main() = application {
     val log by remember { mutableStateOf(logger()) }
     val appContext by remember { mutableStateOf(AppConfig.init(isMigrateDatabase = true)) }
     var isApplicationLoading by remember { mutableStateOf(true) }
+    var wasDisplayedOnCloseTrayNotification by remember { mutableStateOf(false) }
     var currentAuthentication: Authentication? by remember { mutableStateOf(null) }
     var isShowCurrentWindow by remember { mutableStateOf(true) }
 
@@ -81,7 +82,20 @@ fun main() = application {
         Window(
             title = applicationNameWithVersion,
             visible = isShowCurrentWindow,
-            onCloseRequest = { isShowCurrentWindow = false },
+            onCloseRequest = {
+                isShowCurrentWindow = false
+
+                if (!wasDisplayedOnCloseTrayNotification) {
+                    trayState.sendNotification(
+                        Notification(
+                            title = applicationNameWithVersion,
+                            message = "App is not closed, you can find it in tray",
+                            type = Notification.Type.Info
+                        )
+                    )
+                    wasDisplayedOnCloseTrayNotification = true
+                }
+            },
             resizable = true,
             alwaysOnTop = false,
             state = rememberWindowState(
