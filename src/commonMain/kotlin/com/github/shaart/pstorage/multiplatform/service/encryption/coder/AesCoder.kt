@@ -97,13 +97,12 @@ class AesCoder : Coder {
     /**
      * Generate an encryption key using PBKDF2 with given salt, iterations and hash bytes.
      */
-    private fun generateEncryptionKey(str: String, salt: ByteArray): SecretKey {
-        val strChars = str.toCharArray()
-        val spec: KeySpec = PBEKeySpec(strChars, salt, ITERATIONS, HASH_LENGTH_BYTES)
-        val key: SecretKey
+    private fun generateEncryptionKey(key: String, salt: ByteArray): SecretKey {
+        val keyChars = key.toCharArray()
+        val spec: KeySpec = PBEKeySpec(keyChars, salt, ITERATIONS, HASH_LENGTH_BYTES)
         return try {
-            key = factory.generateSecret(spec)
-            SecretKeySpec(key.encoded, "AES")
+            val generatedSecretKey = factory.generateSecret(spec)
+            SecretKeySpec(generatedSecretKey.encoded, "AES")
         } catch (e: InvalidKeySpecException) {
             throw CryptoException("Cannot generate encryption key", e)
         }
@@ -122,12 +121,12 @@ class AesCoder : Coder {
     /**
      * Generates secureIV using masterPassword.
      *
-     * @param masterPassword main password (key)
+     * @param key key
      * @return a secure IV array
      */
-    private fun generateSecureIv(masterPassword: String): ByteArray {
+    private fun generateSecureIv(key: String): ByteArray {
         var resultBytes = ByteArray(IV_LENGTH)
-        val bytes = masterPassword.toByteArray(StandardCharsets.UTF_8)
+        val bytes = key.toByteArray(StandardCharsets.UTF_8)
         if (bytes.size > IV_LENGTH) {
             resultBytes = bytes.copyOfRange(0, IV_LENGTH)
         } else if (bytes.size < IV_LENGTH) {

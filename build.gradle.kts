@@ -40,10 +40,25 @@ kotlin {
                 implementation("org.slf4j:slf4j-api:2.0.7")
                 implementation("ch.qos.logback:logback-classic:1.4.7")
                 implementation("ch.qos.logback:logback-core:1.4.7")
+                implementation("org.springframework.security:spring-security-crypto:6.1.1")
+                // for org.springframework.security:spring-security-crypto
+                implementation("commons-logging:commons-logging:1.2")
+
             }
         }
         val jvmTest by getting
+        val commonTest by getting {
+            dependencies {
+                implementation("org.junit.jupiter:junit-jupiter-api:5.9.3")
+                runtimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.3")
+                implementation("org.assertj:assertj-core:3.6.1")
+            }
+        }
     }
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
 
 compose.desktop {

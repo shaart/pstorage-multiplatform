@@ -11,6 +11,7 @@ import com.github.shaart.pstorage.multiplatform.logger
 import com.github.shaart.pstorage.multiplatform.model.LoginModel
 import com.github.shaart.pstorage.multiplatform.model.RegisterModel
 import com.github.shaart.pstorage.multiplatform.model.encryption.CryptoDto
+import com.github.shaart.pstorage.multiplatform.model.encryption.CryptoResult
 import com.github.shaart.pstorage.multiplatform.service.encryption.EncryptionService
 import com.github.shaart.pstorage.multiplatform.service.mapper.UserMapper
 import com.github.shaart.pstorage.multiplatform.service.mask.Masker
@@ -35,20 +36,21 @@ class DefaultAuthService(
         }
 
         val createdUser = userQueries.transactionWithResult {
-            val cryptoDto = CryptoDto(
-                value = registerModel.password,
-                encryptionType = null
-            )
-            val encryptedMasterPassword = encryptionService.encrypt(cryptoDto)
+            val passwordsHash = encryptionService.calculateHash(registerModel.password)
             userQueries.createUser(
                 name = registerModel.login,
-                masterPassword = encryptedMasterPassword.value,
-                encryptionType = encryptedMasterPassword.encryptionType.name
+                masterPassword = passwordsHash,
+                encryptionType = EncryptionType.Constants.HASH,
             )
             val insertedId = userQueries.lastInsertRowId().executeAsOne()
             userQueries.findUserById(insertedId).executeAsOne()
         }
-        return enrichToDto(createdUser).also {
+        val cryptoDto = CryptoDto(
+            value = registerModel.password,
+            encryptionType = null
+        )
+        val encryptedMasterPassword = encryptionService.encryptForInMemory(cryptoDto)
+        return enrichToDto(createdUser, encryptedMasterPassword).also {
             log.info(
                 "Successfully registered user with name = '{}'",
                 masker.username(registerModel.login)
@@ -61,26 +63,36 @@ class DefaultAuthService(
         val user = userQueries.findUserByName(loginModel.login).executeAsOneOrNull()
             ?: throw AuthNoMatchingUserException()
 
-        val cryptoDto = CryptoDto(
-            value = loginModel.password,
-            encryptionType = EncryptionType.valueOf(user.encrypt_type)
-        )
-        val encryptedRequestPassword = encryptionService.encrypt(cryptoDto).value
-        if (encryptedRequestPassword != user.master_password) {
+        if (user.encrypt_type == EncryptionType.AES_CODER.name) {
+            log.error("Found legacy user (id={}) from app's pre-alpha version", user.id)
+            throw AppException("Cannot perform login action for requested values")
+        }
+        if (!encryptionService.matchesHash(
+                rawValue = loginModel.password,
+                expectedHashValue = user.master_password
+            )
+        ) {
             throw AuthNoMatchingUserException()
         }
-        return enrichToDto(user).also {
+
+        val cryptoDto = CryptoDto(
+            value = loginModel.password,
+            encryptionType = null,
+        )
+        val encryptedRequestPassword = encryptionService.encryptForInMemory(cryptoDto)
+        return enrichToDto(user, encryptedRequestPassword).also {
             log.info("Successful log in to user = '{}'", masker.username(loginModel.login))
         }
     }
 
-    private fun enrichToDto(user: Usr_users): UserViewDto {
+    private fun enrichToDto(user: Usr_users, encryptedMasterPassword: CryptoResult): UserViewDto {
         val passwords = passwordQueries.findAllByUserId(user.id).executeAsList()
         val role = roleQueries.findRoleById(user.role_id).executeAsOne()
         return userMapper.entityToViewDto(
             user = user,
             passwords = passwords,
-            role = role
+            role = role,
+            encryptedMasterPassword = encryptedMasterPassword,
         )
     }
 }

@@ -15,7 +15,7 @@ interface EncryptionService {
      * @param cryptoDto a value to be encrypted
      * @return encrypted value
      */
-    fun encrypt(cryptoDto: CryptoDto): CryptoResult
+    fun encryptForInMemory(cryptoDto: CryptoDto): CryptoResult
 
     /**
      * Encrypts a value using key.
@@ -41,7 +41,7 @@ interface EncryptionService {
      * @param cryptoDto a value to be decrypted
      * @return decrypted value
      */
-    fun decrypt(cryptoDto: CryptoDto): CryptoResult
+    fun decryptForInMemory(cryptoDto: CryptoDto): CryptoResult
 
     /**
      * Decrypts a value using key.
@@ -59,4 +59,21 @@ interface EncryptionService {
      * @return decrypted value
      */
     fun decryptForUser(value: CryptoDto, encryptionType: EncryptionType, encryptedMasterPassword: String): CryptoResult
+
+    /**
+     * Calculates a hash for value.
+     *
+     * @param value a raw input value
+     * @return value's hash
+     */
+    fun calculateHash(value: String): String
+
+    /**
+     * Check if [rawValue] matches [expectedHashValue].
+     *
+     * @param rawValue raw input value. For example, raw password
+     * @param expectedHashValue hash value to match
+     * @return true of [rawValue]'s hash matches [expectedHashValue]
+     */
+    fun matchesHash(rawValue: String, expectedHashValue: String): Boolean
 }

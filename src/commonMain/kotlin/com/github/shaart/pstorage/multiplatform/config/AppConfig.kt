@@ -1,8 +1,12 @@
 package com.github.shaart.pstorage.multiplatform.config
 
+import com.github.shaart.pstorage.multiplatform.context.DefaultSecurityContext
+import com.github.shaart.pstorage.multiplatform.context.SecurityContext
 import com.github.shaart.pstorage.multiplatform.db.PstorageDatabase
 import com.github.shaart.pstorage.multiplatform.enums.EncryptionType
 import com.github.shaart.pstorage.multiplatform.exception.GlobalExceptionHandler
+import com.github.shaart.pstorage.multiplatform.generator.DefaultPasswordGenerator
+import com.github.shaart.pstorage.multiplatform.generator.PasswordGenerator
 import com.github.shaart.pstorage.multiplatform.logger
 import com.github.shaart.pstorage.multiplatform.service.auth.DefaultAuthService
 import com.github.shaart.pstorage.multiplatform.service.encryption.EncryptionService
@@ -15,6 +19,7 @@ import com.github.shaart.pstorage.multiplatform.service.mask.DefaultMasker
 import com.github.shaart.pstorage.multiplatform.service.password.DefaultPasswordService
 import com.github.shaart.pstorage.multiplatform.service.password.PasswordService
 import org.flywaydb.core.Flyway
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import java.util.*
 
 class AppConfig {
@@ -29,12 +34,20 @@ class AppConfig {
 
         private val globalExceptionHandler = GlobalExceptionHandler(properties)
         private val aesCoder = AesCoder()
+        private val bcryptPasswordEncoder = BCryptPasswordEncoder()
+        private val passwordGenerator: PasswordGenerator = DefaultPasswordGenerator()
+
+        private val securityContext: SecurityContext = DefaultSecurityContext(
+            currentEncodingKey = passwordGenerator.generateSecureRandomPassword(),
+        )
+
         private val encryptionService: EncryptionService = EncryptionServiceImpl(
-            properties = properties,
-            defaultEncryptionType = EncryptionType.AES_CODER,
             coders = listOf(
                 aesCoder
-            ).associateByTo(EnumMap(EncryptionType::class.java)) { it.getEncryptionType() }
+            ).associateByTo(EnumMap(EncryptionType::class.java)) { it.getEncryptionType() },
+            defaultEncryptionType = EncryptionType.AES_CODER,
+            passwordEncoder = bcryptPasswordEncoder,
+            securityContext = securityContext
         )
 
         private val roleMapper = RoleMapper()

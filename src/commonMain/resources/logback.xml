@@ -1,7 +1,7 @@
 <configuration>
   <property name="LOG_DIR" value="logs" />
   <property name="LOG_FILE" value="pstorage" />
-  <property name="PATTERN" value="%d{HH:mm:ss.SSS} [userId=%X{userId}] [%thread] %-5level %logger{36} - %msg%n" />
+  <property name="PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [userId=%X{userId}] [%thread] %-5level %logger{36} - %msg%n" />
 
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
