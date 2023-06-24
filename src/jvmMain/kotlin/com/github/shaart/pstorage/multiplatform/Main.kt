@@ -20,7 +20,7 @@ fun main() = application {
     val log by remember { mutableStateOf(logger()) }
     val appContext by remember { mutableStateOf(AppConfig.init(isMigrateDatabase = true)) }
     var isApplicationLoading by remember { mutableStateOf(true) }
-    var wasDisplayedOnCloseTrayNotification by remember { mutableStateOf(false) }
+    var shouldDisplayNotificationOnHideToTray by remember { mutableStateOf(true) }
     var currentAuthentication: Authentication? by remember { mutableStateOf(null) }
     var isShowCurrentWindow by remember { mutableStateOf(true) }
 
@@ -40,6 +40,12 @@ fun main() = application {
                 onClick = { isShowCurrentWindow = true }
             )
             Separator()
+            CheckboxItem(
+                text = "Notify about hiding to tray",
+                checked = shouldDisplayNotificationOnHideToTray,
+                onCheckedChange = { shouldDisplayNotificationOnHideToTray = it }
+            )
+            Separator()
             Menu(text = "Passwords") {
                 currentAuthentication?.user?.passwords?.forEach {
                     Item(
@@ -54,6 +60,20 @@ fun main() = application {
         state = trayState,
         onAction = { isShowCurrentWindow = true },
     )
+
+    val onCloseCommonWindow = {
+        isShowCurrentWindow = false
+
+        if (shouldDisplayNotificationOnHideToTray) {
+            trayState.sendNotification(
+                Notification(
+                    title = applicationNameWithVersion,
+                    message = "App is not closed, you can find it in tray",
+                    type = Notification.Type.Info
+                )
+            )
+        }
+    }
 
     if (isApplicationLoading) {
         Window(
@@ -82,20 +102,7 @@ fun main() = application {
         Window(
             title = applicationNameWithVersion,
             visible = isShowCurrentWindow,
-            onCloseRequest = {
-                isShowCurrentWindow = false
-
-                if (!wasDisplayedOnCloseTrayNotification) {
-                    trayState.sendNotification(
-                        Notification(
-                            title = applicationNameWithVersion,
-                            message = "App is not closed, you can find it in tray",
-                            type = Notification.Type.Info
-                        )
-                    )
-                    wasDisplayedOnCloseTrayNotification = true
-                }
-            },
+            onCloseRequest = onCloseCommonWindow,
             resizable = true,
             alwaysOnTop = false,
             state = rememberWindowState(
@@ -123,7 +130,7 @@ fun main() = application {
     Window(
         title = applicationNameWithVersion,
         visible = isShowCurrentWindow,
-        onCloseRequest = { isShowCurrentWindow = false },
+        onCloseRequest = onCloseCommonWindow,
         icon = painterResource(appContext.properties().ui.taskbarIconPath),
     ) {
         window.minimumSize = Dimension(640, 480)
