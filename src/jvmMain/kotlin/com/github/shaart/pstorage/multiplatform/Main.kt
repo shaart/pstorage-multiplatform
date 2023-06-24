@@ -29,11 +29,13 @@ fun main() = application {
     }
 
     val trayState = rememberTrayState()
+    val applicationNameWithVersion =
+        "${appContext.properties().applicationName} (${appContext.properties().version.git.buildVersion})"
     Tray(
         icon = painterResource("assets/icons/tray/icon16.png"),
         menu = {
             Item(
-                text = "${appContext.properties().applicationName} (${appContext.properties().version.git.buildVersion})",
+                text = applicationNameWithVersion,
                 onClick = { isShowCurrentWindow = true }
             )
             Separator()
@@ -43,11 +45,11 @@ fun main() = application {
                         text = it.alias,
                         onClick = it.createCopyPasswordCommand(authentication = currentAuthentication!!)
                     )
-                }
+                } ?: Item(text = "No passwords found", enabled = false, onClick = {})
             }
             Item(text = "Exit", onClick = ::exitApplication)
         },
-        tooltip = appContext.properties().applicationName,
+        tooltip = applicationNameWithVersion,
         state = trayState,
         onAction = { isShowCurrentWindow = true },
     )
@@ -77,7 +79,7 @@ fun main() = application {
     }
     if (currentAuthentication == null) {
         Window(
-            title = "${appContext.properties().applicationName} (${appContext.properties().version.git.buildVersion})",
+            title = applicationNameWithVersion,
             visible = isShowCurrentWindow,
             onCloseRequest = { isShowCurrentWindow = false },
             resizable = true,
@@ -105,7 +107,7 @@ fun main() = application {
     }
 
     Window(
-        title = "${appContext.properties().applicationName} (${appContext.properties().version.git.buildVersion})",
+        title = applicationNameWithVersion,
         visible = isShowCurrentWindow,
         onCloseRequest = { isShowCurrentWindow = false },
         icon = painterResource(appContext.properties().ui.taskbarIconPath),
