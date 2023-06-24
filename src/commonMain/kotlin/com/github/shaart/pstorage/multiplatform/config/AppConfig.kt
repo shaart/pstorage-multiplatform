@@ -15,6 +15,7 @@ import com.github.shaart.pstorage.multiplatform.service.mask.DefaultMasker
 import com.github.shaart.pstorage.multiplatform.service.password.DefaultPasswordService
 import com.github.shaart.pstorage.multiplatform.service.password.PasswordService
 import org.flywaydb.core.Flyway
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import java.util.*
 
 class AppConfig {
@@ -29,9 +30,11 @@ class AppConfig {
 
         private val globalExceptionHandler = GlobalExceptionHandler(properties)
         private val aesCoder = AesCoder()
+        private val bcryptPasswordEncoder = BCryptPasswordEncoder()
         private val encryptionService: EncryptionService = EncryptionServiceImpl(
             properties = properties,
             defaultEncryptionType = EncryptionType.AES_CODER,
+            passwordEncoder = bcryptPasswordEncoder,
             coders = listOf(
                 aesCoder
             ).associateByTo(EnumMap(EncryptionType::class.java)) { it.getEncryptionType() }

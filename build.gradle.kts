@@ -40,6 +40,10 @@ kotlin {
                 implementation("org.slf4j:slf4j-api:2.0.7")
                 implementation("ch.qos.logback:logback-classic:1.4.7")
                 implementation("ch.qos.logback:logback-core:1.4.7")
+                implementation("org.springframework.security:spring-security-crypto:6.1.1")
+                // for org.springframework.security:spring-security-crypto
+                implementation("commons-logging:commons-logging:1.2")
+
             }
         }
         val jvmTest by getting

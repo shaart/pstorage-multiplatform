@@ -7,12 +7,14 @@ import com.github.shaart.pstorage.multiplatform.exception.CryptoException
 import com.github.shaart.pstorage.multiplatform.model.encryption.CryptoDto
 import com.github.shaart.pstorage.multiplatform.model.encryption.CryptoResult
 import com.github.shaart.pstorage.multiplatform.service.encryption.coder.Coder
+import org.springframework.security.crypto.password.PasswordEncoder
 import java.util.*
 
 class EncryptionServiceImpl(
     private val properties: PstorageProperties,
     private val coders: EnumMap<EncryptionType, Coder>,
-    private val defaultEncryptionType: EncryptionType
+    private val defaultEncryptionType: EncryptionType,
+    private val passwordEncoder: PasswordEncoder,
 ) : EncryptionService {
 
     init {
@@ -77,5 +79,13 @@ class EncryptionServiceImpl(
             cryptoDto = value,
             key = decryptedMasterPassword
         )
+    }
+
+    override fun calculateHash(value: String): String {
+        return passwordEncoder.encode(value)
+    }
+
+    override fun matchesHash(rawValue: String, expectedHashValue: String): Boolean {
+        return passwordEncoder.matches(rawValue, expectedHashValue)
     }
 }

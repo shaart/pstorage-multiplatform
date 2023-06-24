@@ -59,4 +59,21 @@ interface EncryptionService {
      * @return decrypted value
      */
     fun decryptForUser(value: CryptoDto, encryptionType: EncryptionType, encryptedMasterPassword: String): CryptoResult
+
+    /**
+     * Calculates a hash for value.
+     *
+     * @param value a raw input value
+     * @return value's hash
+     */
+    fun calculateHash(value: String): String
+
+    /**
+     * Check if [rawValue] matches [expectedHashValue].
+     *
+     * @param rawValue raw input value. For example, raw password
+     * @param expectedHashValue hash value to match
+     * @return true of [rawValue]'s hash matches [expectedHashValue]
+     */
+    fun matchesHash(rawValue: String, expectedHashValue: String): Boolean
 }

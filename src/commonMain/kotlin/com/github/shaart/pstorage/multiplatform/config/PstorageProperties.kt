@@ -38,7 +38,6 @@ data class Aes(
 
 data class Common(
     var key: String = "@S7r0ng\$ecre7Key",
-    var vector: String = "encRyb7!n1tVe70r",
 )
 
 data class Database(
