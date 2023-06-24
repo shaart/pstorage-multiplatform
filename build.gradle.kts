@@ -10,6 +10,7 @@ plugins {
     id("app.cash.sqldelight")
     kotlin("plugin.serialization")
     id("org.flywaydb.flyway") version "9.19.1"
+    id("com.gorylenko.gradle-git-properties") version "2.4.1"
 }
 
 group = "com.github.shaart"
@@ -43,7 +44,6 @@ kotlin {
                 implementation("org.springframework.security:spring-security-crypto:6.1.1")
                 // for org.springframework.security:spring-security-crypto
                 implementation("commons-logging:commons-logging:1.2")
-
             }
         }
         val jvmTest by getting
@@ -126,10 +126,29 @@ tasks.register<Copy>("copyGeneratedMigrations") {
     into(into)
     dependsOn("generateCommonMainPstorageDatabaseMigrations")
 }
+tasks.register<Copy>("copyGeneratedResources") {
+    val generatedResources = file("$buildDir/generated/resources/")
+    val targetResourcesRoot = file("$buildDir/processedResources/jvm/main/")
+    from(generatedResources)
+    into(targetResourcesRoot)
+    dependsOn("generateGitProperties")
+}
 tasks.withType<ProcessResources> {
     dependsOn("copyGeneratedMigrations")
+    dependsOn("copyGeneratedResources")
 }
 
 flyway {
     locations = arrayOf("filesystem:$buildDir/generated/db/migrations")
+}
+
+gitProperties {
+    gitPropertiesName = "git.properties"
+    keys = listOf(
+        "git.branch", "git.build.version",
+        "git.commit.id", "git.commit.id.abbrev",
+        "git.commit.time", "git.closest.tag.name",
+    )
+    gitPropertiesResourceDir.set(file("$buildDir/generated/resources"))
+    dateFormatTimeZone = "UTC"
 }
