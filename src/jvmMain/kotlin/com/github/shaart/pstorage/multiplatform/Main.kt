@@ -61,7 +61,6 @@ fun main() = application {
                 onClick = { isShowSettingsWindow = true },
                 enabled = currentAuthentication != null,
             )
-            Separator()
             Item(
                 text = "Log out...",
                 onClick = { currentAuthentication = null },
