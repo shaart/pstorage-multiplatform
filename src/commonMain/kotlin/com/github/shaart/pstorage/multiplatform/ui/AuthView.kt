@@ -5,6 +5,9 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -13,6 +16,7 @@ import androidx.compose.ui.input.key.*
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,6 +38,7 @@ fun AuthView(
     MaterialTheme {
         var login by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
+        var isPasswordHidden by remember { mutableStateOf(true) }
         val focusManager = LocalFocusManager.current
 
         val logInButtonInteractionSource = remember { MutableInteractionSource() }
@@ -96,7 +101,7 @@ fun AuthView(
                 value = password,
                 label = { Text("Password") },
                 onValueChange = { password = it },
-                visualTransformation = PasswordVisualTransformation(),
+                visualTransformation = if (isPasswordHidden) PasswordVisualTransformation() else VisualTransformation.None,
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
                     .onKeyEvent {
@@ -106,6 +111,15 @@ fun AuthView(
                         }
                         false
                     },
+                trailingIcon = {
+                    val icon =
+                        if (isPasswordHidden) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
+                    val description = if (isPasswordHidden) "Show password" else "Hide password"
+
+                    IconButton(onClick = { isPasswordHidden = !isPasswordHidden }) {
+                        Icon(imageVector = icon, contentDescription = description)
+                    }
+                },
             )
             Button(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),

@@ -24,6 +24,7 @@ repositories {
 }
 
 val sqldelightVersion = project.findProperty("sqldelight.version")
+val composeVersion = project.findProperty("compose.version")
 
 kotlin {
     jvm {
@@ -33,14 +34,24 @@ kotlin {
     sourceSets {
         val jvmMain by getting {
             dependencies {
+                // ui
+                implementation("org.jetbrains.compose.material:material-icons-extended-desktop:$composeVersion")
                 implementation(compose.desktop.currentOs)
-                implementation("app.cash.sqldelight:sqlite-driver:$sqldelightVersion")
+
+                // kotlin
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+
+                // db
+                implementation("app.cash.sqldelight:sqlite-driver:$sqldelightVersion")
                 implementation("org.xerial:sqlite-jdbc:3.42.0.0")
                 implementation("org.flywaydb:flyway-core:9.19.1")
+
+                // logging
                 implementation("org.slf4j:slf4j-api:2.0.7")
                 implementation("ch.qos.logback:logback-classic:1.4.7")
                 implementation("ch.qos.logback:logback-core:1.4.7")
+
+                // crypto
                 implementation("org.springframework.security:spring-security-crypto:6.1.1")
                 // for org.springframework.security:spring-security-crypto
                 implementation("commons-logging:commons-logging:1.2")
