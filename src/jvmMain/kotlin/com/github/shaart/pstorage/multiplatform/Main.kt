@@ -61,6 +61,11 @@ fun main() = application {
                 onClick = { isShowSettingsWindow = true },
                 enabled = currentAuthentication != null,
             )
+            Item(
+                text = "Log out...",
+                onClick = { currentAuthentication = null },
+                enabled = currentAuthentication != null,
+            )
             Separator()
             Item(text = "Exit", onClick = ::exitApplication)
         },
