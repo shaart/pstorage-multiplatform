@@ -16,8 +16,8 @@
       <pattern>${PATTERN}</pattern>
     </encoder>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <fileNamePattern>${LOG_DIR}/%d{yyyy/MM}/${LOG_FILE}.gz</fileNamePattern>
-      <totalSizeCap>1GB</totalSizeCap>
+      <fileNamePattern>${LOG_DIR}/%d{yyyy/MM,aux}/${LOG_FILE}-%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+      <totalSizeCap>100MB</totalSizeCap>
     </rollingPolicy>
   </appender>
 
