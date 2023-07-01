@@ -62,6 +62,12 @@ fun main() = application {
                 enabled = currentAuthentication != null,
             )
             Separator()
+            Item(
+                text = "Log out...",
+                onClick = { currentAuthentication = null },
+                enabled = currentAuthentication != null,
+            )
+            Separator()
             Item(text = "Exit", onClick = ::exitApplication)
         },
         tooltip = applicationNameWithVersion,
