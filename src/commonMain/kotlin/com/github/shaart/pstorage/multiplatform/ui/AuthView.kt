@@ -113,7 +113,7 @@ fun AuthView(
                     },
                 trailingIcon = {
                     val icon =
-                        if (isPasswordHidden) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                        if (isPasswordHidden) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
                     val description = if (isPasswordHidden) "Show password" else "Hide password"
 
                     IconButton(onClick = { isPasswordHidden = !isPasswordHidden }) {
