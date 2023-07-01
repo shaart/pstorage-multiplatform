@@ -10,5 +10,6 @@ data class UserViewDto(
     val encryptionType: EncryptionType,
     val role: RoleViewDto,
     val createdAt: LocalDateTime,
-    val passwords: List<PasswordViewDto>
+    val passwords: List<PasswordViewDto>,
+    val settings: List<UserSettingViewDto>,
 )

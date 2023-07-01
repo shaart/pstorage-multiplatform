@@ -15,9 +15,12 @@ import com.github.shaart.pstorage.multiplatform.service.encryption.coder.AesCode
 import com.github.shaart.pstorage.multiplatform.service.mapper.PasswordMapper
 import com.github.shaart.pstorage.multiplatform.service.mapper.RoleMapper
 import com.github.shaart.pstorage.multiplatform.service.mapper.UserMapper
+import com.github.shaart.pstorage.multiplatform.service.mapper.UserSettingsMapper
 import com.github.shaart.pstorage.multiplatform.service.mask.DefaultMasker
 import com.github.shaart.pstorage.multiplatform.service.password.DefaultPasswordService
 import com.github.shaart.pstorage.multiplatform.service.password.PasswordService
+import com.github.shaart.pstorage.multiplatform.service.setting.DefaultSettingsService
+import com.github.shaart.pstorage.multiplatform.service.setting.SettingsService
 import org.flywaydb.core.Flyway
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import java.util.*
@@ -60,12 +63,19 @@ class AppConfig {
 
         private val roleMapper = RoleMapper()
         private val passwordMapper = PasswordMapper(encryptionService)
-        private val userMapper = UserMapper(roleMapper, passwordMapper)
+        private val userSettingsMapper = UserSettingsMapper()
+
+        private val userMapper = UserMapper(
+            roleMapper = roleMapper,
+            passwordMapper = passwordMapper,
+            userSettingsMapper = userSettingsMapper,
+        )
 
         private val masker = DefaultMasker()
         private val authService = DefaultAuthService(
             userQueries = database.userQueries,
             passwordQueries = database.passwordQueries,
+            userSettingQueries = database.userSettingQueries,
             roleQueries = database.roleQueries,
             encryptionService = encryptionService,
             userMapper = userMapper,
@@ -77,6 +87,10 @@ class AppConfig {
             passwordMapper = passwordMapper,
             masker = masker,
         )
+        private val settingsService: SettingsService = DefaultSettingsService(
+            settingQueries = database.userSettingQueries,
+            settingsMapper = userSettingsMapper,
+        )
 
         fun init(isMigrateDatabase: Boolean): ApplicationContext {
             log.info("Loading application with version: {}", properties.version)
@@ -86,6 +100,7 @@ class AppConfig {
             }
             return DefaultApplicationContext(
                 authService = authService,
+                settingsService = settingsService,
                 properties = properties,
                 globalExceptionHandler = globalExceptionHandler,
                 passwordService = passwordService

@@ -4,7 +4,9 @@ import com.github.shaart.pstorage.multiplatform.config.ApplicationContext
 import com.github.shaart.pstorage.multiplatform.config.PstorageProperties
 import com.github.shaart.pstorage.multiplatform.dto.PasswordViewDto
 import com.github.shaart.pstorage.multiplatform.dto.RoleViewDto
+import com.github.shaart.pstorage.multiplatform.dto.UserSettingViewDto
 import com.github.shaart.pstorage.multiplatform.dto.UserViewDto
+import com.github.shaart.pstorage.multiplatform.enums.AppSettings
 import com.github.shaart.pstorage.multiplatform.enums.EncryptionType
 import com.github.shaart.pstorage.multiplatform.exception.GlobalExceptionHandler
 import com.github.shaart.pstorage.multiplatform.model.Authentication
@@ -12,8 +14,10 @@ import com.github.shaart.pstorage.multiplatform.model.LoginModel
 import com.github.shaart.pstorage.multiplatform.model.RegisterModel
 import com.github.shaart.pstorage.multiplatform.service.auth.AuthService
 import com.github.shaart.pstorage.multiplatform.service.password.PasswordService
+import com.github.shaart.pstorage.multiplatform.service.setting.SettingsService
 import com.github.shaart.pstorage.multiplatform.util.ClipboardUtil
 import java.time.LocalDateTime
+import java.util.*
 import java.util.concurrent.ThreadLocalRandom
 import java.util.stream.IntStream
 
@@ -33,7 +37,20 @@ class PreviewData {
             role = RoleViewDto("1", "USER", LocalDateTime.now()),
             createdAt = LocalDateTime.now(),
             passwords = previewPasswords(passwordsCount),
+            settings = previewAllDefaultSettings()
         )
+
+        private fun previewAllDefaultSettings(): List<UserSettingViewDto> =
+            Arrays.stream(AppSettings.values())
+                .map {
+                    UserSettingViewDto(
+                        name = it.settingName,
+                        value = it.defaultValue,
+                        isUserDefined = false,
+                        settingType = it.settingType,
+                    )
+                }
+                .toList()
 
         fun previewPasswords(passwordsCount: Long = 100): MutableList<PasswordViewDto> =
             IntStream.iterate(1) { it + 1 }
@@ -58,6 +75,10 @@ class PreviewData {
             return object : ApplicationContext {
                 override fun authService(): AuthService {
                     return previewAuthService()
+                }
+
+                override fun settingsService(): SettingsService {
+                    return previewSettingsService()
                 }
 
                 override fun properties(): PstorageProperties {
@@ -114,6 +135,15 @@ class PreviewData {
 
             override fun login(loginModel: LoginModel): UserViewDto {
                 return previewUserViewDto(100)
+            }
+        }
+
+        fun previewSettingsService() = object : SettingsService {
+            override fun saveSetting(
+                aSetting: UserSettingViewDto,
+                authentication: Authentication
+            ): UserSettingViewDto {
+                return aSetting
             }
         }
 
