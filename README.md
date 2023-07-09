@@ -3,9 +3,22 @@
 | `main` | todo         |              |
 | `dev`  | todo         |              |
 
-## About
+<h1 style="font-family: Alef,serif">
+    <img src="static/icon64.svg" alt="logo" height="128" style="vertical-align: middle"/> pstorage
+</h1>
 
-Simple offline portable Password Storage application.
+**pstorage** - simple offline portable password storage application.
+
+## Table of contents
+
+- [How to use](#how-to-use)
+    - [Auth window](#auth-window)
+    - [Main window](#main-window)
+    - [System tray](#system-tray)
+- [How to install](#how-to-install)
+- [How to build](#how-to-build)
+- [How to run for local development](#how-to-run-for-local-development)
+- [License](#license)
 
 ## How to use
 
@@ -60,9 +73,9 @@ On screenshot:
 
 ## How to install
 
-1. Download release build for your system.
+1. Download release build for your system from "Releases" section.
 2. Run installation file.
-3. Open `pstorage-multiplatform.exe` in the root of installed directory. Be free to move 
+3. Open `pstorage-multiplatform.exe` in the root of installed directory. Be free to move
    application to another place or to another PC as whole directory.
 
 ## How to build
@@ -81,7 +94,7 @@ On screenshot:
 
 2. Find built artifact in `build\compose\binaries\main-release\`
 
-## How to run for development
+## How to run for local development
 
 If you need full application version:
 
@@ -89,7 +102,7 @@ If you need full application version:
 ./gradlew run
 ```
 
-If you need to preview specific View (@Composable) in intractable way:
+If you need to preview specific View (`@Composable`) in interactive way:
 
 1. Go to `src/jvmMain/com/github/shaart/pstorage/multiplatform/PreviewMain.kt`
 2. Edit view to needed
@@ -98,3 +111,7 @@ If you need to preview specific View (@Composable) in intractable way:
 ```bash
 ./gradlew -Dapp.preview=true run
 ```
+
+## License
+
+[Apache License 2.0](LICENSE)
