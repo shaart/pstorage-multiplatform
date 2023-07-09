@@ -130,6 +130,7 @@ sqldelight {
     }
 }
 tasks.register<Copy>("copyGeneratedMigrations") {
+    group = "prebuild"
     val from = file("$buildDir/generated/db/migrations")
     val into = file("$buildDir/processedResources/jvm/main/db/migrations")
     from(from)
@@ -138,6 +139,7 @@ tasks.register<Copy>("copyGeneratedMigrations") {
     dependsOn("generateCommonMainPstorageDatabaseMigrations")
 }
 tasks.register<Copy>("copyGeneratedResources") {
+    group = "prebuild"
     val generatedResources = file("$buildDir/generated/resources/")
     val targetResourcesRoot = file("$buildDir/processedResources/jvm/main/")
     from(generatedResources)
