@@ -17,7 +17,7 @@ defaults:
 
 jobs:
   release:
-    name: ${{ github.event.head_commit.message }}
+    name: Release
     runs-on: 'ubuntu-latest'
     permissions: 'write-all'
     steps:
@@ -32,6 +32,7 @@ jobs:
           branch: main
           name_is_regexp: false
           name: distributable-macos-latest
+          path: build
           if_no_artifact_found: fail
 
       - name: Download built Artifacts (Windows)
@@ -42,6 +43,7 @@ jobs:
           branch: main
           name_is_regexp: false
           name: distributable-windows-latest
+          path: build
           if_no_artifact_found: fail
 
       - name: Set tag variable
