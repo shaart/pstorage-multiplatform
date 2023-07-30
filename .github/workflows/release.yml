@@ -14,9 +14,6 @@ on:
       config-path:
         required: true
         type: string
-    secrets:
-      GITHUB_TOKEN:
-        required: true
 
 defaults:
   run:
