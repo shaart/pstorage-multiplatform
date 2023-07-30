@@ -14,7 +14,7 @@ plugins {
 }
 
 group = "com.github.shaart"
-version = "1.0.0"
+version = extra["app.version"].toString()
 val applicationName = "pstorage-multiplatform"
 
 repositories {

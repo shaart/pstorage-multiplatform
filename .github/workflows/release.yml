@@ -65,15 +65,30 @@ jobs:
           path: |
             build/**/*.dmg
             build/**/*.msi
-            
+
   release:
     name: Release
+    needs: [ build ]
     strategy:
       fail-fast: false
       matrix:
         os: [ macos-latest, windows-latest ]
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set tag variable
+        id: vars
+        run: echo "app_tag=$(cat gradle.properties | grep app.version | cut -d'=' -f2)" >> $GITHUB_OUTPUT
+
+      - name: Create tag from version
+        uses: rickstaa/action-create-tag@v1
+        id: tag_create
+        with:
+          tag: ${{ steps.vars.outputs.app_tag }}
+          tag_exists_error: true
+
       - name: Download built Artifacts
         uses: actions/download-artifact@v2
         with:
