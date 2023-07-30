@@ -23,14 +23,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Download built Artifacts
+      - name: Download built Artifacts (MacOS)
         uses: dawidd6/action-download-artifact@v2
         with:
-          workflow: build.yml
+          workflow: build-release.yml
           workflow_conclusion: success
           branch: main
-          name_is_regexp: true
-          name: distributable-[\w\-]+
+          name_is_regexp: false
+          name: distributable-macos-latest
+          if_no_artifact_found: fail
+
+      - name: Download built Artifacts (Windows)
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: build-release.yml
+          workflow_conclusion: success
+          branch: main
+          name_is_regexp: false
+          name: distributable-windows-latest
           if_no_artifact_found: fail
 
       - name: Set tag variable
