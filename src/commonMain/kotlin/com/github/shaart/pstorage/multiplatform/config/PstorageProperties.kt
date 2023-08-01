@@ -2,6 +2,8 @@ package com.github.shaart.pstorage.multiplatform.config
 
 import java.util.*
 
+private val userHomePath = System.getProperty("user.home")
+
 data class PstorageProperties(
     var applicationName: String = "pstorage",
     var version: Version = Version(),
@@ -58,7 +60,7 @@ data class UsernameLength(
 )
 
 data class Database(
-    var url: String = "jdbc:sqlite:pstorage.data.db",
+    var url: String = "jdbc:sqlite:$userHomePath/pstorage-multiplatform/pstorage.data.db",
     var username: String? = null,
     var password: String? = null,
 )

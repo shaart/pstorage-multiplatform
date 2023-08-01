@@ -16,6 +16,7 @@ plugins {
 group = "com.github.shaart"
 version = extra["app.version"].toString()
 val applicationName = "pstorage-multiplatform"
+val fullAppPackage = "com.github.shaart.pstorage.multiplatform"
 
 repositories {
     google()
@@ -102,6 +103,11 @@ compose.desktop {
             val iconsDir = project.file(iconsDirPath)
             macOS {
                 iconFile.set(iconsDir.resolve("icon64.icns"))
+                bundleID = fullAppPackage
+                appCategory = "public.app-category.utilities"
+                signing {
+                    sign.set(false)
+                }
             }
             linux {
                 iconFile.set(iconsDir.resolve("icon64.png"))

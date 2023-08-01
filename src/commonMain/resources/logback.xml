@@ -1,5 +1,5 @@
 <configuration>
-  <property name="LOG_DIR" value="logs" />
+  <property name="LOG_DIR" value="${user.home}/pstorage-multiplatform/logs" />
   <property name="LOG_FILE" value="pstorage" />
   <property name="PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [userId=%X{userId}] [%thread] %-5level %logger{36} - %msg%n" />
 

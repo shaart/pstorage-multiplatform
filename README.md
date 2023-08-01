@@ -71,12 +71,17 @@ On screenshot:
   authorized.
 - Exit button.
 
-## How to install
+## How to install on Windows
 
 1. Download release build for your system from "Releases" section.
-2. Run installation file.
-3. Open `pstorage-multiplatform.exe` in the root of installed directory. Be free to move
-   application to another place or to another PC as whole directory.
+2. Run `.msi` installation file.
+3. Open `pstorage-multiplatform.exe` in the root of installed directory.
+
+## How to install on MacOS
+
+1. Download release build for your system from "Releases" section.
+2. Run `.dmg` installation file. Drag `pstorage-multiplatform.app` into "Application" directory.
+3. Open `pstorage-multiplatform.app`.
 
 ## How to build
 
