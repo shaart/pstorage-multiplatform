@@ -1,7 +1,7 @@
-| Branch | Build Status | Code Quality |
-|--------|--------------|--------------|
-| `main` | todo         |              |
-| `dev`  | todo         |              |
+| Branch | Build Status                                                                                                                                                                                                         | Code Quality |
+|--------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------|
+| `main` | [![Build Release](https://github.com/shaart/pstorage-multiplatform/actions/workflows/build-release.yml/badge.svg?branch=main)](https://github.com/shaart/pstorage-multiplatform/actions/workflows/build-release.yml) |              |
+| `dev`  | todo                                                                                                                                                                                                                 |              |
 
 <h1 style="font-family: Alef,serif">
     <img src="static/icon64.svg" alt="logo" height="128" style="vertical-align: middle"/> pstorage
