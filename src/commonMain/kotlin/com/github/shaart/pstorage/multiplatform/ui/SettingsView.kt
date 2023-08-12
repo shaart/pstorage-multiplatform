@@ -25,18 +25,18 @@ import com.github.shaart.pstorage.multiplatform.enums.AppSettings
 import com.github.shaart.pstorage.multiplatform.enums.SettingType
 import com.github.shaart.pstorage.multiplatform.exception.AppException
 import com.github.shaart.pstorage.multiplatform.logger
-import com.github.shaart.pstorage.multiplatform.model.Authentication
 import com.github.shaart.pstorage.multiplatform.preview.PreviewData
 
 @Composable
 fun SettingsView(
     appContext: ApplicationContext,
-    authentication: Authentication,
     onSettingsChange: (List<UserSettingViewDto>) -> Unit,
     modifier: Modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+    activeViewContext: ActiveViewContext,
 ) {
     val settingsService = appContext.settingsService()
     val globalExceptionHandler = appContext.globalExceptionHandler()
+    val authentication = activeViewContext.getAuthentication()!!
 
     MaterialTheme {
         Box(modifier = modifier) {
@@ -115,7 +115,9 @@ fun SettingsView(
 fun previewSettingsView() {
     SettingsView(
         appContext = PreviewData.previewApplicationContext(),
-        authentication = PreviewData.previewAuthentication(),
-        onSettingsChange = {}
+        onSettingsChange = {},
+        activeViewContext = PreviewData.previewActiveViewContextAuthorized(
+            authentication = PreviewData.previewAuthentication(),
+        )
     )
 }

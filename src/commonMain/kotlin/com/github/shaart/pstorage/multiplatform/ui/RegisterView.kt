@@ -28,10 +28,10 @@ import com.github.shaart.pstorage.multiplatform.preview.PreviewData
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun AuthView(
+fun RegisterView(
     appContext: ApplicationContext,
-    onAuthSuccess: (UserViewDto) -> Unit,
-    onRegisterClick: () -> Unit
+    onRegisterSuccess: (UserViewDto) -> Unit,
+    activeViewContext: ActiveViewContext,
 ) {
     val authService = appContext.authService()
     val globalExceptionHandler = appContext.globalExceptionHandler()
@@ -42,12 +42,6 @@ fun AuthView(
         var isPasswordHidden by remember { mutableStateOf(true) }
         val focusManager = LocalFocusManager.current
 
-        val logInButtonInteractionSource = remember { MutableInteractionSource() }
-        val isLogInFocused by logInButtonInteractionSource.collectIsFocusedAsState()
-        val logInButtonColor =
-            if (isLogInFocused) MaterialTheme.colors.secondary
-            else MaterialTheme.colors.primary
-
         val signUpButtonInteractionSource = remember { MutableInteractionSource() }
         val isSignUpFocused by signUpButtonInteractionSource.collectIsFocusedAsState()
         val signUpButtonColor =
@@ -56,7 +50,7 @@ fun AuthView(
 
         val logInFunction: () -> Unit = globalExceptionHandler.runSafely {
             val user = authService.login(LoginModel(login, password))
-            onAuthSuccess(user)
+            onRegisterSuccess(user)
         }
 
         Column(
@@ -75,7 +69,7 @@ fun AuthView(
             verticalArrangement = Arrangement.Center,
         ) {
             Text(
-                text = "Authorization",
+                text = "Registration",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
@@ -122,28 +116,20 @@ fun AuthView(
                     }
                 },
             )
-            Button(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
-                onClick = logInFunction,
-                interactionSource = logInButtonInteractionSource,
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = logInButtonColor
-                )
-            ) {
-                Text("Sign in")
-            }
-
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = onRegisterClick,
+                onClick = globalExceptionHandler.runSafely {
+                    val createdUser = authService.register(RegisterModel(login, password))
+                    onRegisterSuccess(createdUser)
+                },
                 interactionSource = signUpButtonInteractionSource,
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = signUpButtonColor
                 )
             ) {
-                Text("Create a new account")
+                Text("Sign up")
             }
         }
     }
@@ -151,10 +137,10 @@ fun AuthView(
 
 @Preview
 @Composable
-fun previewAuthView() {
-    AuthView(
+fun previewRegisterView() {
+    RegisterView(
         appContext = PreviewData.previewApplicationContext(),
-        onAuthSuccess = {},
-        onRegisterClick = {}
+        onRegisterSuccess = {},
+        activeViewContext = PreviewData.previewActiveViewContextUnauthorized(),
     )
 }

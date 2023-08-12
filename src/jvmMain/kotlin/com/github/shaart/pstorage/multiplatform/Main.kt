@@ -11,35 +11,74 @@ import androidx.compose.ui.window.*
 import com.github.shaart.pstorage.multiplatform.config.AppConfig
 import com.github.shaart.pstorage.multiplatform.enums.AppSettings
 import com.github.shaart.pstorage.multiplatform.model.Authentication
-import com.github.shaart.pstorage.multiplatform.ui.AuthView
-import com.github.shaart.pstorage.multiplatform.ui.MainView
-import com.github.shaart.pstorage.multiplatform.ui.SettingsView
+import com.github.shaart.pstorage.multiplatform.ui.ActiveViewContext
+import com.github.shaart.pstorage.multiplatform.ui.Router
+import com.github.shaart.pstorage.multiplatform.ui.ViewContextSnapshot
+import com.github.shaart.pstorage.multiplatform.ui.Views
 import kotlinx.coroutines.delay
-import org.slf4j.MDC
+import org.slf4j.LoggerFactory
 import java.awt.Dimension
+import java.util.*
+
+class Main
 
 fun main() = application {
-    val log by remember { mutableStateOf(logger()) }
+    val log by remember { mutableStateOf(LoggerFactory.getLogger(Main::class.java)) }
     val appContext by remember { mutableStateOf(AppConfig.init(isMigrateDatabase = true)) }
     var isApplicationLoading by remember { mutableStateOf(true) }
-    var currentAuthentication: Authentication? by remember { mutableStateOf(null) }
     var isShowCurrentWindow by remember { mutableStateOf(true) }
-    var isShowSettingsWindow by remember { mutableStateOf(false) }
+    var isCurrentWindowAlwaysOnTop by remember { mutableStateOf(false) }
+    val focusWindow = {
+        isCurrentWindowAlwaysOnTop = true
+        isCurrentWindowAlwaysOnTop = false
+    }
+    var currentAuthentication: Authentication? by remember { mutableStateOf(null) }
+    var activeView by remember { mutableStateOf(ViewContextSnapshot(view = Views.AUTH)) }
+    var activeViewHistory: Deque<ViewContextSnapshot> by remember { mutableStateOf(ArrayDeque()) }
+    val activeViewContext = ActiveViewContext(
+        getAuthentication = { currentAuthentication },
+        setAuthentication = { currentAuthentication = it },
+        changeView = { newActiveView ->
+            if (Objects.equals(newActiveView, activeView)) {
+                return@ActiveViewContext
+            }
+            activeViewHistory.push(activeView)
+            activeView = newActiveView
+            log.debug("ChangeView, history: {}", activeViewHistory)
+        },
+        goBack = {
+            val prevView = activeViewHistory.poll()
+            if (prevView != null) {
+                activeView = prevView
+            }
+            log.debug("GoBack, history: {}", activeViewHistory)
+        },
+        clearHistory = {
+            activeViewHistory = LinkedList()
+            log.debug("ClearHistory, history: {}", activeViewHistory)
+        }
+    )
+    val applicationNameWithVersion =
+        "${appContext.properties().applicationName} (${appContext.properties().version.git.buildVersion})"
+    val mainWindowState = rememberWindowState()
 
     LaunchedEffect(Unit) {
         delay(500)
         isApplicationLoading = false
+        focusWindow()
     }
-
     val trayState = rememberTrayState()
-    val applicationNameWithVersion =
-        "${appContext.properties().applicationName} (${appContext.properties().version.git.buildVersion})"
     Tray(
         icon = painterResource("assets/icons/tray/icon16.png"),
         menu = {
             Item(
                 text = applicationNameWithVersion,
-                onClick = { isShowCurrentWindow = true }
+                onClick = {
+                    isShowCurrentWindow = true
+                    activeViewContext.restoreActiveView()
+                    activeViewContext.clearHistory()
+                    focusWindow()
+                }
             )
             Separator()
             Menu(text = "Passwords", enabled = currentAuthentication != null) {
@@ -58,12 +97,19 @@ fun main() = application {
             Separator()
             Item(
                 text = "User settings",
-                onClick = { isShowSettingsWindow = true },
+                onClick = {
+                    isShowCurrentWindow = true
+                    activeViewContext.changeView(ViewContextSnapshot(view = Views.SETTINGS))
+                    focusWindow()
+                },
                 enabled = currentAuthentication != null,
             )
             Item(
                 text = "Log out...",
-                onClick = { currentAuthentication = null },
+                onClick = {
+                    activeViewContext.dropAuthentication()
+                    focusWindow()
+                },
                 enabled = currentAuthentication != null,
             )
             Separator()
@@ -113,75 +159,20 @@ fun main() = application {
         }
         return@application
     }
-    if (currentAuthentication == null) {
-        Window(
-            title = applicationNameWithVersion,
-            visible = isShowCurrentWindow,
-            onCloseRequest = onCloseCommonWindow,
-            resizable = true,
-            alwaysOnTop = false,
-            state = rememberWindowState(
-                position = WindowPosition(Alignment.Center),
-                width = 640.dp,
-                height = 480.dp,
-            ),
-            undecorated = false,
-            transparent = false,
-            enabled = true,
-            icon = painterResource(appContext.properties().ui.taskbarIconPath),
-        ) {
-            AuthView(
-                appContext = appContext,
-                onAuthSuccess = { user ->
-                    currentAuthentication = Authentication(user)
-                    MDC.put("userId", user.id)
-                    log.info("Successfully logged with userId = {}", user.id)
-                    log.debug("Found settings: {}", user.settings)
-                }
-            )
-        }
-        return@application
-    }
-
-    Window(
-        title = "$applicationNameWithVersion - Settings",
-        visible = isShowSettingsWindow,
-        onCloseRequest = { isShowSettingsWindow = false },
-        resizable = true,
-        alwaysOnTop = false,
-        state = rememberWindowState(
-            position = WindowPosition(Alignment.Center),
-            width = 640.dp,
-            height = 480.dp,
-        ),
-        undecorated = false,
-        transparent = false,
-        enabled = true,
-        icon = painterResource(appContext.properties().ui.taskbarIconPath),
-    ) {
-        SettingsView(
-            appContext = appContext,
-            authentication = currentAuthentication!!,
-            onSettingsChange = { newSettings ->
-                currentAuthentication = currentAuthentication?.withSettings(newSettings)
-            }
-        )
-    }
-
     Window(
         title = applicationNameWithVersion,
         visible = isShowCurrentWindow,
+        alwaysOnTop = isCurrentWindowAlwaysOnTop,
         onCloseRequest = onCloseCommonWindow,
+        state = mainWindowState,
         icon = painterResource(appContext.properties().ui.taskbarIconPath),
     ) {
         window.minimumSize = Dimension(640, 480)
-        MainView(
-            authentication = currentAuthentication!!,
-            passwordService = appContext.passwordService(),
-            onPasswordsChange = { newPasswords ->
-                currentAuthentication = currentAuthentication?.withPasswords(newPasswords)
-            },
-            globalExceptionHandler = appContext.globalExceptionHandler(),
+        Router(
+            activeView = activeView,
+            activeViewContext = activeViewContext,
+            log = log,
+            appContext = appContext,
         )
     }
 }
