@@ -1,4 +1,4 @@
-package com.github.shaart.pstorage.multiplatform.ui
+package com.github.shaart.pstorage.multiplatform.ui.model.navigation
 
 data class ViewContextSnapshot(
     val view: Views,

@@ -1,4 +1,4 @@
-package com.github.shaart.pstorage.multiplatform.ui
+package com.github.shaart.pstorage.multiplatform.ui.model.navigation
 
 import com.github.shaart.pstorage.multiplatform.model.Authentication
 
@@ -14,6 +14,7 @@ data class ActiveViewContext(
         changeView(ViewContextSnapshot(view = Views.MAIN))
         clearHistory()
     }
+
     fun dropAuthentication() {
         setAuthentication(null)
         changeView(ViewContextSnapshot(view = Views.AUTH))

@@ -1,4 +1,4 @@
-package com.github.shaart.pstorage.multiplatform.ui
+package com.github.shaart.pstorage.multiplatform.ui.view
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.VerticalScrollbar
@@ -26,6 +26,7 @@ import com.github.shaart.pstorage.multiplatform.enums.SettingType
 import com.github.shaart.pstorage.multiplatform.exception.AppException
 import com.github.shaart.pstorage.multiplatform.logger
 import com.github.shaart.pstorage.multiplatform.preview.PreviewData
+import com.github.shaart.pstorage.multiplatform.ui.model.navigation.ActiveViewContext
 
 @Composable
 fun SettingsView(
@@ -61,7 +62,7 @@ fun SettingsView(
                         Divider(color = Color.Black, thickness = 1.dp)
                     }
                 }
-                items(authentication.user.settings) { aSetting ->
+                items(items = authentication.user.settings) { aSetting ->
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         if (aSetting.settingType == SettingType.TOGGLE) {
                             var isChecked by remember { mutableStateOf(aSetting.value.toBoolean()) }

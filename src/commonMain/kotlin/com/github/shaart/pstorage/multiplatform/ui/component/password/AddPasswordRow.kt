@@ -1,4 +1,4 @@
-package com.github.shaart.pstorage.multiplatform.ui.password
+package com.github.shaart.pstorage.multiplatform.ui.component.password
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*

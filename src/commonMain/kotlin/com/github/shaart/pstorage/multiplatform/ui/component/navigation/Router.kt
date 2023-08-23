@@ -1,8 +1,12 @@
-package com.github.shaart.pstorage.multiplatform.ui
+package com.github.shaart.pstorage.multiplatform.ui.component.navigation
 
 import androidx.compose.runtime.Composable
 import com.github.shaart.pstorage.multiplatform.config.ApplicationContext
 import com.github.shaart.pstorage.multiplatform.model.Authentication
+import com.github.shaart.pstorage.multiplatform.ui.model.navigation.ActiveViewContext
+import com.github.shaart.pstorage.multiplatform.ui.model.navigation.ViewContextSnapshot
+import com.github.shaart.pstorage.multiplatform.ui.model.navigation.Views
+import com.github.shaart.pstorage.multiplatform.ui.view.*
 import org.slf4j.Logger
 import org.slf4j.MDC
 

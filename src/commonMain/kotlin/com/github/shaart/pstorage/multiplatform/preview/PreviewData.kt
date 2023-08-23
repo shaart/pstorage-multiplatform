@@ -15,7 +15,7 @@ import com.github.shaart.pstorage.multiplatform.model.RegisterModel
 import com.github.shaart.pstorage.multiplatform.service.auth.AuthService
 import com.github.shaart.pstorage.multiplatform.service.password.PasswordService
 import com.github.shaart.pstorage.multiplatform.service.setting.SettingsService
-import com.github.shaart.pstorage.multiplatform.ui.ActiveViewContext
+import com.github.shaart.pstorage.multiplatform.ui.model.navigation.ActiveViewContext
 import com.github.shaart.pstorage.multiplatform.util.ClipboardUtil
 import java.time.LocalDateTime
 import java.util.*

@@ -1,4 +1,4 @@
-package com.github.shaart.pstorage.multiplatform.ui.table
+package com.github.shaart.pstorage.multiplatform.ui.component.table
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding

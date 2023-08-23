@@ -1,4 +1,4 @@
-package com.github.shaart.pstorage.multiplatform.ui
+package com.github.shaart.pstorage.multiplatform.ui.view
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
@@ -11,11 +11,10 @@ import com.github.shaart.pstorage.multiplatform.exception.GlobalExceptionHandler
 import com.github.shaart.pstorage.multiplatform.model.Authentication
 import com.github.shaart.pstorage.multiplatform.preview.PreviewData
 import com.github.shaart.pstorage.multiplatform.service.password.PasswordService
-import com.github.shaart.pstorage.multiplatform.ui.password.PasswordsTable
-import com.github.shaart.pstorage.multiplatform.ui.password.AddPasswordRow
+import com.github.shaart.pstorage.multiplatform.ui.component.password.PasswordsTable
+import com.github.shaart.pstorage.multiplatform.ui.component.password.AddPasswordRow
 
 @Composable
-@Preview
 fun MainView(
     authentication: Authentication,
     passwordService: PasswordService,
@@ -31,7 +30,7 @@ fun MainView(
                 modifier = Modifier.fillMaxWidth().fillMaxHeight().weight(.8f),
                 globalExceptionHandler = globalExceptionHandler,
                 onPasswordCopy = {
-                    val copyCommand = it.createCopyPasswordCommand(authentication = authentication)
+                    val copyCommand: () -> Unit = it.createCopyPasswordCommand(authentication = authentication)
                     copyCommand()
                 },
                 onPasswordDelete = {

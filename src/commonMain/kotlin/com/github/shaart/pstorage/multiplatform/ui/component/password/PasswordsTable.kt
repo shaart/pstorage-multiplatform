@@ -1,4 +1,4 @@
-package com.github.shaart.pstorage.multiplatform.ui.password
+package com.github.shaart.pstorage.multiplatform.ui.component.password
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.VerticalScrollbar
@@ -23,8 +23,8 @@ import com.github.shaart.pstorage.multiplatform.dto.PasswordViewDto
 import com.github.shaart.pstorage.multiplatform.exception.GlobalExceptionHandler
 import com.github.shaart.pstorage.multiplatform.model.Authentication
 import com.github.shaart.pstorage.multiplatform.preview.PreviewData
-import com.github.shaart.pstorage.multiplatform.ui.table.TableHeaderTextCell
-import com.github.shaart.pstorage.multiplatform.ui.table.TextTableCell
+import com.github.shaart.pstorage.multiplatform.ui.component.table.TableHeaderTextCell
+import com.github.shaart.pstorage.multiplatform.ui.component.table.TextTableCell
 
 @Composable
 fun PasswordsTable(
@@ -58,7 +58,7 @@ fun PasswordsTable(
                     modifier = Modifier.height(1.dp).fillMaxHeight().fillMaxWidth()
                 )
             }
-            items(authentication.user.passwords) {
+            items(items = authentication.user.passwords) {
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(start = 10.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly,

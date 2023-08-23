@@ -11,10 +11,10 @@ import androidx.compose.ui.window.*
 import com.github.shaart.pstorage.multiplatform.config.AppConfig
 import com.github.shaart.pstorage.multiplatform.enums.AppSettings
 import com.github.shaart.pstorage.multiplatform.model.Authentication
-import com.github.shaart.pstorage.multiplatform.ui.ActiveViewContext
-import com.github.shaart.pstorage.multiplatform.ui.Router
-import com.github.shaart.pstorage.multiplatform.ui.ViewContextSnapshot
-import com.github.shaart.pstorage.multiplatform.ui.Views
+import com.github.shaart.pstorage.multiplatform.ui.model.navigation.ActiveViewContext
+import com.github.shaart.pstorage.multiplatform.ui.component.navigation.Router
+import com.github.shaart.pstorage.multiplatform.ui.model.navigation.ViewContextSnapshot
+import com.github.shaart.pstorage.multiplatform.ui.model.navigation.Views
 import kotlinx.coroutines.delay
 import org.slf4j.LoggerFactory
 import java.awt.Dimension
