@@ -65,14 +65,12 @@ fun AuthView(
                 onEnterPressed = onLogInClick,
             )
             Button(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp)
+                modifier = Modifier.fillMaxWidth()
                     .onKeyEvent { callIfEnterPressed(it, onLogInClick) },
                 onClick = onLogInClick,
             ) {
                 Text("Sign in")
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
 
             TextButton(
                 modifier = Modifier.fillMaxWidth()
