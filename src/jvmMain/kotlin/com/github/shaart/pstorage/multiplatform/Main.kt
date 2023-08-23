@@ -46,6 +46,7 @@ fun main() = application {
             activeView = newActiveView
             log.debug("ChangeView, history: {}", activeViewHistory)
         },
+        canGoBack = { !activeViewHistory.isEmpty() },
         goBack = {
             val prevView = activeViewHistory.poll()
             if (prevView != null) {

@@ -152,22 +152,17 @@ class PreviewData {
             GlobalExceptionHandler(previewPstorageProperties())
 
         fun previewActiveViewContextUnauthorized(): ActiveViewContext {
-            return ActiveViewContext(
-                getAuthentication = { null },
-                setAuthentication = {},
-                changeView = {},
-                goBack = {},
-                clearHistory = {}
-            )
+            return previewActiveViewContext(authentication = null)
         }
 
-        fun previewActiveViewContextAuthorized(authentication: Authentication?): ActiveViewContext {
+        fun previewActiveViewContext(authentication: Authentication? = null): ActiveViewContext {
             return ActiveViewContext(
                 getAuthentication = { authentication },
                 setAuthentication = {},
                 changeView = {},
                 goBack = {},
-                clearHistory = {}
+                canGoBack = { false },
+                clearHistory = {},
             )
         }
     }

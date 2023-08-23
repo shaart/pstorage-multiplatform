@@ -8,6 +8,7 @@ data class ActiveViewContext(
     val changeView: (ViewContextSnapshot) -> Unit,
     val goBack: () -> Unit,
     val clearHistory: () -> Unit,
+    val canGoBack: () -> Boolean,
 ) {
     fun applyAuthentication(authentication: Authentication) {
         setAuthentication(authentication)

@@ -1,13 +1,19 @@
 package com.github.shaart.pstorage.multiplatform.ui.component.navigation
 
+import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
 import com.github.shaart.pstorage.multiplatform.config.ApplicationContext
 import com.github.shaart.pstorage.multiplatform.model.Authentication
+import com.github.shaart.pstorage.multiplatform.preview.PreviewData
 import com.github.shaart.pstorage.multiplatform.ui.model.navigation.ActiveViewContext
 import com.github.shaart.pstorage.multiplatform.ui.model.navigation.ViewContextSnapshot
 import com.github.shaart.pstorage.multiplatform.ui.model.navigation.Views
-import com.github.shaart.pstorage.multiplatform.ui.view.*
+import com.github.shaart.pstorage.multiplatform.ui.view.AuthView
+import com.github.shaart.pstorage.multiplatform.ui.view.MainView
+import com.github.shaart.pstorage.multiplatform.ui.view.RegisterView
+import com.github.shaart.pstorage.multiplatform.ui.view.SettingsView
 import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.slf4j.MDC
 
 @Composable
@@ -73,4 +79,29 @@ fun Router(
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun previewRouterMain() {
+    Router(
+        log = LoggerFactory.getLogger("Router"),
+        activeViewContext = PreviewData.previewActiveViewContextUnauthorized(),
+        appContext = PreviewData.previewApplicationContext(),
+        activeView = ViewContextSnapshot(view = Views.MAIN),
+    )
+}
+
+@Composable
+fun previewRouter(activeView: ViewContextSnapshot) {
+    Router(
+        log = LoggerFactory.getLogger("Router"),
+        activeViewContext = PreviewData.previewActiveViewContext(
+            authentication = PreviewData.previewAuthentication(
+                passwordsCount = 3
+            )
+        ),
+        appContext = PreviewData.previewApplicationContext(),
+        activeView = activeView,
+    )
 }

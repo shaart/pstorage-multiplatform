@@ -117,7 +117,7 @@ fun previewSettingsView() {
     SettingsView(
         appContext = PreviewData.previewApplicationContext(),
         onSettingsChange = {},
-        activeViewContext = PreviewData.previewActiveViewContextAuthorized(
+        activeViewContext = PreviewData.previewActiveViewContext(
             authentication = PreviewData.previewAuthentication(),
         )
     )
