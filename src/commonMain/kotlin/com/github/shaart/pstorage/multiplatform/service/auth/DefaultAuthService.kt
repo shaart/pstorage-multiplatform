@@ -32,10 +32,7 @@ class DefaultAuthService(
 
     override fun register(registerModel: RegisterModel): UserViewDto {
         log.info("Registering user with name = '{}'", masker.username(registerModel.login))
-        val existsUserByName = userQueries.existsUserByName(registerModel.login).executeAsOne()
-        if (existsUserByName) {
-            throw AppException("User with that name already present")
-        }
+        validateRegistrationRequest(registerModel)
 
         val createdUser = userQueries.transactionWithResult {
             val passwordsHash = encryptionService.calculateHash(registerModel.password)
@@ -57,6 +54,17 @@ class DefaultAuthService(
                 "Successfully registered user with name = '{}'",
                 masker.username(registerModel.login)
             )
+        }
+    }
+
+    private fun validateRegistrationRequest(registerModel: RegisterModel) {
+        if (registerModel.isNonMatchingPasswords()) {
+            throw AppException("'Password' and 'Confirmation password' are different")
+        }
+
+        val existsUserByName = userQueries.existsUserByName(registerModel.login).executeAsOne()
+        if (existsUserByName) {
+            throw AppException("User with that name already present")
         }
     }
 

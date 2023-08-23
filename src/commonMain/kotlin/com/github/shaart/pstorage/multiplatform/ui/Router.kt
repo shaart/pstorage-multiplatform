@@ -47,7 +47,6 @@ fun Router(
             when (activeView.view) {
                 Views.REGISTER -> RegisterView(
                     appContext = appContext,
-                    activeViewContext = activeViewContext,
                     onRegisterSuccess = { user ->
                         activeViewContext.changeView(ViewContextSnapshot(view = Views.AUTH))
                         log.info("Successfully registered userId = {}", user.id)

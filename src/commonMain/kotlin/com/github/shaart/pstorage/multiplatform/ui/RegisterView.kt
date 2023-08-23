@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.shaart.pstorage.multiplatform.config.ApplicationContext
 import com.github.shaart.pstorage.multiplatform.dto.UserViewDto
-import com.github.shaart.pstorage.multiplatform.model.LoginModel
 import com.github.shaart.pstorage.multiplatform.model.RegisterModel
 import com.github.shaart.pstorage.multiplatform.preview.PreviewData
 
@@ -31,7 +30,6 @@ import com.github.shaart.pstorage.multiplatform.preview.PreviewData
 fun RegisterView(
     appContext: ApplicationContext,
     onRegisterSuccess: (UserViewDto) -> Unit,
-    activeViewContext: ActiveViewContext,
 ) {
     val authService = appContext.authService()
     val globalExceptionHandler = appContext.globalExceptionHandler()
@@ -40,6 +38,8 @@ fun RegisterView(
         var login by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
         var isPasswordHidden by remember { mutableStateOf(true) }
+        var confirmationPassword by remember { mutableStateOf("") }
+        var isConfirmationPasswordHidden by remember { mutableStateOf(true) }
         val focusManager = LocalFocusManager.current
 
         val signUpButtonInteractionSource = remember { MutableInteractionSource() }
@@ -48,9 +48,15 @@ fun RegisterView(
             if (isSignUpFocused) MaterialTheme.colors.secondary
             else MaterialTheme.colors.primary
 
-        val logInFunction: () -> Unit = globalExceptionHandler.runSafely {
-            val user = authService.login(LoginModel(login, password))
-            onRegisterSuccess(user)
+        val signUpFunction: () -> Unit = globalExceptionHandler.runSafely {
+            val createdUser = authService.register(
+                RegisterModel(
+                    login = login,
+                    password = password,
+                    confirmationPassword = confirmationPassword
+                )
+            )
+            onRegisterSuccess(createdUser)
         }
 
         Column(
@@ -77,17 +83,11 @@ fun RegisterView(
             )
             OutlinedTextField(
                 value = login,
-                label = { Text("Login") },
+                label = { Text("Username") },
                 onValueChange = { login = it },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
-                    .onKeyEvent {
-                        if ((it.key == Key.Enter) && it.type == KeyEventType.KeyDown) {
-                            logInFunction()
-                            return@onKeyEvent true
-                        }
-                        false
-                    },
+                    .onKeyEvent { signUpIfEnterPressed(it, signUpFunction) },
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -96,24 +96,31 @@ fun RegisterView(
                 value = password,
                 label = { Text("Password") },
                 onValueChange = { password = it },
-                visualTransformation = if (isPasswordHidden) PasswordVisualTransformation() else VisualTransformation.None,
+                visualTransformation = getPasswordTransformation(isPasswordHidden),
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
-                    .onKeyEvent {
-                        if ((it.key == Key.Enter) && it.type == KeyEventType.KeyDown) {
-                            logInFunction()
-                            return@onKeyEvent true
-                        }
-                        false
-                    },
+                    .onKeyEvent { signUpIfEnterPressed(it, signUpFunction) },
                 trailingIcon = {
-                    val icon =
-                        if (isPasswordHidden) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
-                    val description = if (isPasswordHidden) "Show password" else "Hide password"
+                    getPasswordIcon(
+                        isPasswordHidden = isPasswordHidden,
+                        toggleVisibility = { isPasswordHidden = it })
+                },
+            )
 
-                    IconButton(onClick = { isPasswordHidden = !isPasswordHidden }) {
-                        Icon(imageVector = icon, contentDescription = description)
-                    }
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = confirmationPassword,
+                label = { Text("Confirmation password") },
+                onValueChange = { confirmationPassword = it },
+                visualTransformation = getPasswordTransformation(isConfirmationPasswordHidden),
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+                    .onKeyEvent { signUpIfEnterPressed(it, signUpFunction) },
+                trailingIcon = {
+                    getPasswordIcon(
+                        isPasswordHidden = isConfirmationPasswordHidden,
+                        toggleVisibility = { isConfirmationPasswordHidden = it })
                 },
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -121,7 +128,7 @@ fun RegisterView(
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = globalExceptionHandler.runSafely {
-                    val createdUser = authService.register(RegisterModel(login, password))
+                    val createdUser = authService.register(RegisterModel(login, password, confirmationPassword))
                     onRegisterSuccess(createdUser)
                 },
                 interactionSource = signUpButtonInteractionSource,
@@ -129,9 +136,31 @@ fun RegisterView(
                     backgroundColor = signUpButtonColor
                 )
             ) {
-                Text("Sign up")
+                Text("Create an account")
             }
         }
+    }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+private fun signUpIfEnterPressed(it: KeyEvent, signUpFunction: () -> Unit): Boolean {
+    if ((it.key == Key.Enter) && it.type == KeyEventType.KeyDown) {
+        signUpFunction()
+        return true
+    }
+    return false
+}
+
+private fun getPasswordTransformation(isPasswordHidden: Boolean): VisualTransformation =
+    if (isPasswordHidden) PasswordVisualTransformation() else VisualTransformation.None
+
+@Composable
+private fun getPasswordIcon(isPasswordHidden: Boolean, toggleVisibility: (Boolean) -> Unit) {
+    val icon = if (isPasswordHidden) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
+    val description = if (isPasswordHidden) "Show password" else "Hide password"
+
+    return IconButton(onClick = { toggleVisibility(!isPasswordHidden) }) {
+        Icon(imageVector = icon, contentDescription = description)
     }
 }
 
@@ -141,6 +170,5 @@ fun previewRegisterView() {
     RegisterView(
         appContext = PreviewData.previewApplicationContext(),
         onRegisterSuccess = {},
-        activeViewContext = PreviewData.previewActiveViewContextUnauthorized(),
     )
 }

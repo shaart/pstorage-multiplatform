@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.sp
 import com.github.shaart.pstorage.multiplatform.config.ApplicationContext
 import com.github.shaart.pstorage.multiplatform.dto.UserViewDto
 import com.github.shaart.pstorage.multiplatform.model.LoginModel
-import com.github.shaart.pstorage.multiplatform.model.RegisterModel
 import com.github.shaart.pstorage.multiplatform.preview.PreviewData
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -83,7 +82,7 @@ fun AuthView(
             )
             OutlinedTextField(
                 value = login,
-                label = { Text("Login") },
+                label = { Text("Username") },
                 onValueChange = { login = it },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
