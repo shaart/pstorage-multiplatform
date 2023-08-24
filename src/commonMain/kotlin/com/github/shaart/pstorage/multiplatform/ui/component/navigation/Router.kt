@@ -40,6 +40,16 @@ fun Router(
             )
         }
 
+        Views.REGISTER -> RegisterView(
+            appContext = appContext,
+            activeViewContext = activeViewContext,
+            onRegisterSuccess = { user ->
+                activeViewContext.changeView(ViewContextSnapshot(view = Views.AUTH))
+                log.info("Successfully registered userId = {}", user.id)
+                log.debug("Found settings: {}", user.settings)
+            }
+        )
+
         Views.MAIN -> {
             MainView(
                 authentication = activeViewContext.getAuthentication()!!,
@@ -55,14 +65,6 @@ fun Router(
 
         else -> NavBar(activeViewContext = activeViewContext) {
             when (activeView.view) {
-                Views.REGISTER -> RegisterView(
-                    appContext = appContext,
-                    onRegisterSuccess = { user ->
-                        activeViewContext.changeView(ViewContextSnapshot(view = Views.AUTH))
-                        log.info("Successfully registered userId = {}", user.id)
-                        log.debug("Found settings: {}", user.settings)
-                    }
-                )
 
                 Views.SETTINGS -> SettingsView(
                     appContext = appContext,
@@ -73,6 +75,7 @@ fun Router(
                         )
                     }
                 )
+
                 else -> {
                     log.warn("Received unexpected view in Router: {}", activeView.view)
                 }

@@ -2,10 +2,7 @@ package com.github.shaart.pstorage.multiplatform.ui.view
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -19,11 +16,13 @@ import com.github.shaart.pstorage.multiplatform.dto.UserViewDto
 import com.github.shaart.pstorage.multiplatform.model.RegisterModel
 import com.github.shaart.pstorage.multiplatform.preview.PreviewData
 import com.github.shaart.pstorage.multiplatform.ui.component.password.ToggleablePasswordField
+import com.github.shaart.pstorage.multiplatform.ui.model.navigation.ActiveViewContext
 
 @Composable
 fun RegisterView(
     appContext: ApplicationContext,
     onRegisterSuccess: (UserViewDto) -> Unit,
+    activeViewContext: ActiveViewContext,
 ) {
     val authService = appContext.authService()
     val globalExceptionHandler = appContext.globalExceptionHandler()
@@ -93,6 +92,13 @@ fun RegisterView(
             ) {
                 Text("Create an account")
             }
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface),
+                onClick = activeViewContext.goBack,
+            ) {
+                Text("Back")
+            }
         }
     }
 }
@@ -112,5 +118,6 @@ fun previewRegisterView() {
     RegisterView(
         appContext = PreviewData.previewApplicationContext(),
         onRegisterSuccess = {},
+        activeViewContext = PreviewData.previewActiveViewContextUnauthorized(),
     )
 }
