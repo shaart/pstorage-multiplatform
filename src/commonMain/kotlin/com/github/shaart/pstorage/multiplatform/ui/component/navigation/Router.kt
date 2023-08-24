@@ -50,21 +50,21 @@ fun Router(
             }
         )
 
-        Views.MAIN -> {
-            MainView(
-                authentication = activeViewContext.getAuthentication()!!,
-                passwordService = appContext.passwordService(),
-                onPasswordsChange = { newPasswords ->
-                    activeViewContext.setAuthentication(
-                        activeViewContext.getAuthentication()!!.withPasswords(newPasswords)
-                    )
-                },
-                globalExceptionHandler = appContext.globalExceptionHandler(),
-            )
-        }
-
         else -> NavBar(activeViewContext = activeViewContext) {
             when (activeView.view) {
+
+                Views.MAIN -> {
+                    MainView(
+                        authentication = activeViewContext.getAuthentication()!!,
+                        passwordService = appContext.passwordService(),
+                        onPasswordsChange = { newPasswords ->
+                            activeViewContext.setAuthentication(
+                                activeViewContext.getAuthentication()!!.withPasswords(newPasswords)
+                            )
+                        },
+                        globalExceptionHandler = appContext.globalExceptionHandler(),
+                    )
+                }
 
                 Views.SETTINGS -> SettingsView(
                     appContext = appContext,
