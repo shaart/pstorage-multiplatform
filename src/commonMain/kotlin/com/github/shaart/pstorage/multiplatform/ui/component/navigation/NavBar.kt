@@ -5,11 +5,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -18,6 +17,7 @@ import com.github.shaart.pstorage.multiplatform.ui.model.navigation.ActiveViewCo
 import com.github.shaart.pstorage.multiplatform.ui.model.navigation.ViewContextSnapshot
 import com.github.shaart.pstorage.multiplatform.ui.model.navigation.Views
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun NavBar(
     activeViewContext: ActiveViewContext,
@@ -28,6 +28,26 @@ fun NavBar(
             Modifier.height(52.dp).width(52.dp)
                 .padding(top = 8.dp)
         }
+    }
+    var isShowLogoutConfirmationDialog by remember { mutableStateOf(false) }
+    if (isShowLogoutConfirmationDialog) {
+        AlertDialog(
+            title = { Text("Are you sure you want to log out?") },
+            confirmButton = {
+                Button(onClick = { activeViewContext.dropAuthentication() }) {
+                    Text("Yes, log out")
+                }
+            },
+            dismissButton = {
+                Button(
+                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface),
+                    onClick = { isShowLogoutConfirmationDialog = false },
+                ) {
+                    Text("Cancel")
+                }
+            },
+            onDismissRequest = { isShowLogoutConfirmationDialog = false },
+        )
     }
     Row {
         Column(
@@ -55,6 +75,16 @@ fun NavBar(
                 Icon(
                     imageVector = Icons.Filled.Settings,
                     contentDescription = "Settings",
+                )
+            }
+            Button(
+                modifier = sideBarButtonsModifier,
+                colors = sideBarButtonsColors(),
+                onClick = { isShowLogoutConfirmationDialog = true },
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Logout,
+                    contentDescription = "Log out",
                 )
             }
         }
