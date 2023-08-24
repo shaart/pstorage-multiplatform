@@ -69,6 +69,7 @@ class DefaultAuthService(
     }
 
     override fun login(loginModel: LoginModel): UserViewDto {
+        validateLoginRequest(loginModel)
         log.info("Logging in to user = '{}'", masker.username(loginModel.login))
         val user = userQueries.findUserByName(loginModel.login).executeAsOneOrNull()
             ?: throw AuthNoMatchingUserException()
@@ -92,6 +93,20 @@ class DefaultAuthService(
         val encryptedRequestPassword = encryptionService.encryptForInMemory(cryptoDto)
         return enrichToDto(user, encryptedRequestPassword).also {
             log.info("Successful log in to user = '{}'", masker.username(loginModel.login))
+        }
+    }
+
+    private fun validateLoginRequest(loginModel: LoginModel) {
+        val errors: MutableList<String> = ArrayList()
+        if (loginModel.login.isBlank()) {
+            errors.add("'Username' should be filled")
+        }
+        if (loginModel.password.isBlank()) {
+            errors.add("'Password' should be filled")
+        }
+
+        if (errors.isNotEmpty()) {
+            throw AppException(errors.joinToString())
         }
     }
 
