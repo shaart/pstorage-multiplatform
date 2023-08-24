@@ -1,4 +1,4 @@
-package com.github.shaart.pstorage.multiplatform.ui
+package com.github.shaart.pstorage.multiplatform.ui.view
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.VerticalScrollbar
@@ -25,18 +25,19 @@ import com.github.shaart.pstorage.multiplatform.enums.AppSettings
 import com.github.shaart.pstorage.multiplatform.enums.SettingType
 import com.github.shaart.pstorage.multiplatform.exception.AppException
 import com.github.shaart.pstorage.multiplatform.logger
-import com.github.shaart.pstorage.multiplatform.model.Authentication
 import com.github.shaart.pstorage.multiplatform.preview.PreviewData
+import com.github.shaart.pstorage.multiplatform.ui.model.navigation.ActiveViewContext
 
 @Composable
 fun SettingsView(
     appContext: ApplicationContext,
-    authentication: Authentication,
     onSettingsChange: (List<UserSettingViewDto>) -> Unit,
     modifier: Modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+    activeViewContext: ActiveViewContext,
 ) {
     val settingsService = appContext.settingsService()
     val globalExceptionHandler = appContext.globalExceptionHandler()
+    val authentication = activeViewContext.getAuthentication()!!
 
     MaterialTheme {
         Box(modifier = modifier) {
@@ -52,8 +53,9 @@ fun SettingsView(
                             fontSize = 28.sp,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 32.dp)
+                            modifier = Modifier.fillMaxWidth()
                         )
+                        Divider(modifier = Modifier.padding(top = 8.dp, bottom = 32.dp))
                     }
                 }
                 item {
@@ -61,7 +63,7 @@ fun SettingsView(
                         Divider(color = Color.Black, thickness = 1.dp)
                     }
                 }
-                items(authentication.user.settings) { aSetting ->
+                items(items = authentication.user.settings) { aSetting ->
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         if (aSetting.settingType == SettingType.TOGGLE) {
                             var isChecked by remember { mutableStateOf(aSetting.value.toBoolean()) }
@@ -115,7 +117,9 @@ fun SettingsView(
 fun previewSettingsView() {
     SettingsView(
         appContext = PreviewData.previewApplicationContext(),
-        authentication = PreviewData.previewAuthentication(),
-        onSettingsChange = {}
+        onSettingsChange = {},
+        activeViewContext = PreviewData.previewActiveViewContext(
+            authentication = PreviewData.previewAuthentication(),
+        )
     )
 }

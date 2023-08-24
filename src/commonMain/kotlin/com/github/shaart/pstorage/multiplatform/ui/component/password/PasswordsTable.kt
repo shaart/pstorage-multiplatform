@@ -1,4 +1,4 @@
-package com.github.shaart.pstorage.multiplatform.ui.password
+package com.github.shaart.pstorage.multiplatform.ui.component.password
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.VerticalScrollbar
@@ -10,21 +10,24 @@ import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.outlined.ContentCopy
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.github.shaart.pstorage.multiplatform.dto.PasswordViewDto
 import com.github.shaart.pstorage.multiplatform.exception.GlobalExceptionHandler
 import com.github.shaart.pstorage.multiplatform.model.Authentication
 import com.github.shaart.pstorage.multiplatform.preview.PreviewData
-import com.github.shaart.pstorage.multiplatform.ui.table.TableHeaderTextCell
-import com.github.shaart.pstorage.multiplatform.ui.table.TextTableCell
+import com.github.shaart.pstorage.multiplatform.ui.component.table.TableHeaderTextCell
+import com.github.shaart.pstorage.multiplatform.ui.component.table.TextTableCell
 
 @Composable
 fun PasswordsTable(
@@ -36,6 +39,12 @@ fun PasswordsTable(
     onPasswordEdit: (PasswordViewDto, String) -> Unit,
     onAliasEdit: (PasswordViewDto, String) -> Unit,
 ) {
+    val rowButtonsModifier: Modifier by remember {
+        derivedStateOf {
+            Modifier.padding(start = 8.dp).height(38.dp)
+        }
+    }
+
     Box(
         modifier = modifier,
     ) {
@@ -46,32 +55,34 @@ fun PasswordsTable(
         ) {
             item {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                    modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(vertical = 10.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    TableHeaderTextCell(text = "Alias", weight = .3f, title = true)
-                    TableHeaderTextCell(text = "Password", weight = .3f, title = true)
-                    TableHeaderTextCell(text = "Actions", weight = .3f, title = true)
+                    TableHeaderTextCell(text = "Alias", weight = .45f, title = true, useFillingWithSpacer = true)
+                    TableHeaderTextCell(text = "Password", weight = .45f, title = true, useFillingWithSpacer = true)
+                    TableHeaderTextCell(text = "Actions", width = 180.dp, title = true)
                 }
                 Divider(
                     color = Color.LightGray,
                     modifier = Modifier.height(1.dp).fillMaxHeight().fillMaxWidth()
                 )
             }
-            items(authentication.user.passwords) {
+            items(items = authentication.user.passwords) {
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(start = 10.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     TextTableCell(
-                        text = it.alias, weight = .35f, editable = true,
+                        text = it.alias, weight = .45f, editable = true,
+                        alignment = TextAlign.Left,
                         onEdit = { newValue ->
                             globalExceptionHandler.runSafely { onAliasEdit(it, newValue) }()
                         },
                     )
                     TextTableCell(
-                        text = "**********", weight = .35f, editable = true,
+                        text = "**********", weight = .45f, editable = true,
                         shouldBeEmptyOnEditStart = true,
                         shouldBeMasked = true,
                         onEdit = { newValue ->
@@ -79,27 +90,25 @@ fun PasswordsTable(
                         },
                     )
                     Row(
-                        modifier = Modifier.padding(start = 10.dp).weight(weight = .3f),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        modifier = Modifier.width(180.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Button(
                             onClick = globalExceptionHandler.runSafely { onPasswordCopy(it) },
-                            modifier = Modifier.weight(weight = .48f)
+                            modifier = rowButtonsModifier,
                         ) {
-                            Text("Copy")
                             Icon(
-                                imageVector = Icons.Filled.KeyboardArrowRight,
-                                contentDescription = "Copy to clipboard",
+                                imageVector = Icons.Outlined.ContentCopy,
+                                contentDescription = "Copy password to clipboard",
                             )
                         }
-                        Spacer(modifier = Modifier.weight(weight = .04f))
                         Button(
                             onClick = globalExceptionHandler.runSafely { onPasswordDelete(it) },
-                            modifier = Modifier.weight(weight = .48f)
+                            modifier = rowButtonsModifier,
                         ) {
-                            Text("Delete")
                             Icon(
-                                imageVector = Icons.Filled.Delete,
+                                imageVector = Icons.Outlined.Delete,
                                 contentDescription = "Delete password",
                             )
                         }

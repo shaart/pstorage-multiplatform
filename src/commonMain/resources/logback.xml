@@ -24,6 +24,7 @@
   <logger name="org.flywaydb" level="INFO" />
   <logger name="org.gradle.cache.internal.DefaultFileLockManager" level="WARN" />
   <logger name="com.github.shaart.pstorage.multiplatform.config.AppConfig" level="DEBUG" />
+  <logger name="com.github.shaart.pstorage.multiplatform.Main" level="INFO" />
 
   <root level="info">
     <appender-ref ref="STDOUT" />

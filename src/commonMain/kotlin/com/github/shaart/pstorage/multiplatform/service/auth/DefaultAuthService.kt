@@ -32,10 +32,7 @@ class DefaultAuthService(
 
     override fun register(registerModel: RegisterModel): UserViewDto {
         log.info("Registering user with name = '{}'", masker.username(registerModel.login))
-        val existsUserByName = userQueries.existsUserByName(registerModel.login).executeAsOne()
-        if (existsUserByName) {
-            throw AppException("User with that name already present")
-        }
+        validateRegistrationRequest(registerModel)
 
         val createdUser = userQueries.transactionWithResult {
             val passwordsHash = encryptionService.calculateHash(registerModel.password)
@@ -60,7 +57,19 @@ class DefaultAuthService(
         }
     }
 
+    private fun validateRegistrationRequest(registerModel: RegisterModel) {
+        if (registerModel.isNonMatchingPasswords()) {
+            throw AppException("'Password' and 'Confirmation password' are different")
+        }
+
+        val existsUserByName = userQueries.existsUserByName(registerModel.login).executeAsOne()
+        if (existsUserByName) {
+            throw AppException("User with that name already present")
+        }
+    }
+
     override fun login(loginModel: LoginModel): UserViewDto {
+        validateLoginRequest(loginModel)
         log.info("Logging in to user = '{}'", masker.username(loginModel.login))
         val user = userQueries.findUserByName(loginModel.login).executeAsOneOrNull()
             ?: throw AuthNoMatchingUserException()
@@ -84,6 +93,20 @@ class DefaultAuthService(
         val encryptedRequestPassword = encryptionService.encryptForInMemory(cryptoDto)
         return enrichToDto(user, encryptedRequestPassword).also {
             log.info("Successful log in to user = '{}'", masker.username(loginModel.login))
+        }
+    }
+
+    private fun validateLoginRequest(loginModel: LoginModel) {
+        val errors: MutableList<String> = ArrayList()
+        if (loginModel.login.isBlank()) {
+            errors.add("'Username' should be filled")
+        }
+        if (loginModel.password.isBlank()) {
+            errors.add("'Password' should be filled")
+        }
+
+        if (errors.isNotEmpty()) {
+            throw AppException(errors.joinToString())
         }
     }
 

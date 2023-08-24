@@ -1,7 +1,7 @@
-| Branch | Build Status | Code Quality |
-|--------|--------------|--------------|
-| `main` | todo         |              |
-| `dev`  | todo         |              |
+| Branch | Build Status                                                                                                                                                                                                         | Code Quality |
+|--------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------|
+| `main` | [![Build Release](https://github.com/shaart/pstorage-multiplatform/actions/workflows/build-release.yml/badge.svg?branch=main)](https://github.com/shaart/pstorage-multiplatform/actions/workflows/build-release.yml) |              |
+| `dev`  | todo                                                                                                                                                                                                                 |              |
 
 <h1 style="font-family: Alef,serif">
     <img src="static/icon64.svg" alt="logo" height="128" style="vertical-align: middle"/> pstorage
@@ -12,9 +12,12 @@
 ## Table of contents
 
 - [How to use](#how-to-use)
-    - [Auth window](#auth-window)
-    - [Main window](#main-window)
+    - [Auth](#auth)
+    - [Registration](#registration)
+    - [Main view](#main-view)
+    - [Settings](#settings)
     - [System tray](#system-tray)
+    - [More](#more)
 - [How to install](#how-to-install)
 - [How to build](#how-to-build)
 - [How to run for local development](#how-to-run-for-local-development)
@@ -22,24 +25,29 @@
 
 ## How to use
 
-### Auth window
+### Auth
 
-Once app is open you will see auth window:
+Once app is open you will see auth form:
 ![Auth view](docs/auth_view.png)
 
-If you don't have an account you can enter "Login" and "Password" and press "Sign up" button. You
-will be followed inside application.
+If you don't have an account you can follow "Create a new account" button.
+
+In case of wrong credentials you will see an error.
+
+### Registration
+
+![Registration view](docs/registration_view.png)
+
+You can create any number of accounts with unique 'Username'.
 
 **Be careful:** you can't restore your password if you forget it. Be sure that you remember it or
 write down in safe place.
 
-In case of wrong credentials you will see an error.
+### Main view
 
-### Main window
+After successful log in you will see main view.
 
-After successful log in you will see main window.
-
-If it's your first log in - table will be empty.
+If it's your first log in - passwords table will be empty.
 
 Else you will see information about your passwords as on screenshot below.
 ![Main view](docs/main_view_with_passwords.png)
@@ -54,6 +62,16 @@ On screenshot:
     - "Copy" button - on press it copies password's value to Clipboard.
     - "Delete" button - delete password that you don't need anymore.
 4. Form to add a new password.
+5. Sidebar on the left side with navigation buttons and "Log out" button.
+
+### Settings
+
+![Settings view](docs/settings_view.png)
+
+Here you can configure application.
+
+- Notify about hiding to tray: if enabled - application will use Notification Center on window close
+  ![Notification](docs/notification.png)
 
 ### System tray
 
@@ -63,13 +81,19 @@ After successful log in you will see there your passwords' aliases.
 
 ![System tray menu](docs/tray_menu.png)
 
-On screenshot:
+On screenshot above:
 
 - Application name with version - use this to reopen the main window.
 - Passwords menu - all your passwords' aliases. Click on specific element to copy it's password's
   value to clipboard. **Note:** It's blank if you don't have any password or in case if you are not
   authorized.
-- Exit button.
+- Settings of current user.
+- Quick 'log out' button.
+- Exit button to shutdown application.
+
+### More
+
+- Design: [Figma](https://www.figma.com/file/k5UoSrgBohsrTmETQgDw4f/pstorage-multiplatform-(public)?type=design&node-id=0%3A1&mode=design&t=QEn5ReUuz1ehxoMI-1)
 
 ## How to install on Windows
 

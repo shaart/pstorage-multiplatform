@@ -11,6 +11,7 @@ data class PstorageProperties(
     var database: Database = Database(),
     var flyway: FlywayProperties = FlywayProperties(),
     var ui: UiProperties = UiProperties(),
+    var history: HistoryProperties = HistoryProperties(),
 ) {
     fun populate(gitProperties: Properties) {
         version.git = Git(
@@ -69,4 +70,7 @@ data class FlywayProperties(
 )
 data class UiProperties(
     var taskbarIconPath: String = "assets/icons/taskbar/icon64.png",
+)
+data class HistoryProperties(
+    var maxSize: Int = 15,
 )

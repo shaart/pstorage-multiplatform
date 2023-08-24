@@ -15,6 +15,7 @@ import com.github.shaart.pstorage.multiplatform.model.RegisterModel
 import com.github.shaart.pstorage.multiplatform.service.auth.AuthService
 import com.github.shaart.pstorage.multiplatform.service.password.PasswordService
 import com.github.shaart.pstorage.multiplatform.service.setting.SettingsService
+import com.github.shaart.pstorage.multiplatform.ui.model.navigation.ActiveViewContext
 import com.github.shaart.pstorage.multiplatform.util.ClipboardUtil
 import java.time.LocalDateTime
 import java.util.*
@@ -150,5 +151,19 @@ class PreviewData {
         fun previewGlobalExceptionHandler() =
             GlobalExceptionHandler(previewPstorageProperties())
 
+        fun previewActiveViewContextUnauthorized(): ActiveViewContext {
+            return previewActiveViewContext(authentication = null)
+        }
+
+        fun previewActiveViewContext(authentication: Authentication? = null): ActiveViewContext {
+            return ActiveViewContext(
+                getAuthentication = { authentication },
+                setAuthentication = {},
+                changeView = {},
+                goBack = {},
+                canGoBack = { false },
+                clearHistory = {},
+            )
+        }
     }
 }
