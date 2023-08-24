@@ -43,6 +43,9 @@ fun main() = application {
                 return@ActiveViewContext
             }
             activeViewHistory.push(activeView)
+            if (activeViewHistory.size > appContext.properties().history.maxSize) {
+                activeViewHistory.pollLast()
+            }
             activeView = newActiveView
             log.debug("ChangeView, history: {}", activeViewHistory)
         },
