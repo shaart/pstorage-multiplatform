@@ -10,11 +10,13 @@ import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.outlined.ContentCopy
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,6 +38,12 @@ fun PasswordsTable(
     onPasswordEdit: (PasswordViewDto, String) -> Unit,
     onAliasEdit: (PasswordViewDto, String) -> Unit,
 ) {
+    val rowButtonsModifier: Modifier by remember {
+        derivedStateOf {
+            Modifier.padding(start = 8.dp).height(38.dp)
+        }
+    }
+
     Box(
         modifier = modifier,
     ) {
@@ -79,27 +87,25 @@ fun PasswordsTable(
                         },
                     )
                     Row(
-                        modifier = Modifier.padding(start = 10.dp).weight(weight = .3f),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        modifier = Modifier.weight(weight = .3f),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Button(
                             onClick = globalExceptionHandler.runSafely { onPasswordCopy(it) },
-                            modifier = Modifier.weight(weight = .48f)
+                            modifier = rowButtonsModifier,
                         ) {
-                            Text("Copy")
                             Icon(
-                                imageVector = Icons.Filled.KeyboardArrowRight,
-                                contentDescription = "Copy to clipboard",
+                                imageVector = Icons.Outlined.ContentCopy,
+                                contentDescription = "Copy password to clipboard",
                             )
                         }
-                        Spacer(modifier = Modifier.weight(weight = .04f))
                         Button(
                             onClick = globalExceptionHandler.runSafely { onPasswordDelete(it) },
-                            modifier = Modifier.weight(weight = .48f)
+                            modifier = rowButtonsModifier,
                         ) {
-                            Text("Delete")
                             Icon(
-                                imageVector = Icons.Filled.Delete,
+                                imageVector = Icons.Outlined.Delete,
                                 contentDescription = "Delete password",
                             )
                         }
