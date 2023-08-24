@@ -63,7 +63,7 @@ fun MainView(
             AddPasswordRow(
                 modifier = Modifier.fillMaxWidth()
                     .padding(8.dp)
-                    .height(70.dp),
+                    .height(48.dp),
                 onAddNewPassword = { alias, rawPassword ->
                     val createdPassword =
                         passwordService.createPassword(authentication, alias, rawPassword)
