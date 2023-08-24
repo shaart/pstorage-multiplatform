@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.github.shaart.pstorage.multiplatform.dto.PasswordViewDto
 import com.github.shaart.pstorage.multiplatform.exception.GlobalExceptionHandler
@@ -54,13 +55,13 @@ fun PasswordsTable(
         ) {
             item {
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(start = 10.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(vertical = 10.dp),
+                    horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    TableHeaderTextCell(text = "Alias", weight = .35f, title = true)
-                    TableHeaderTextCell(text = "Password", weight = .35f, title = true)
-                    TableHeaderTextCell(text = "Actions", weight = .3f, title = true)
+                    TableHeaderTextCell(text = "Alias", weight = .45f, title = true, useFillingWithSpacer = true)
+                    TableHeaderTextCell(text = "Password", weight = .45f, title = true, useFillingWithSpacer = true)
+                    TableHeaderTextCell(text = "Actions", width = 180.dp, title = true)
                 }
                 Divider(
                     color = Color.LightGray,
@@ -69,18 +70,19 @@ fun PasswordsTable(
             }
             items(items = authentication.user.passwords) {
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(start = 10.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     TextTableCell(
-                        text = it.alias, weight = .35f, editable = true,
+                        text = it.alias, weight = .45f, editable = true,
+                        alignment = TextAlign.Left,
                         onEdit = { newValue ->
                             globalExceptionHandler.runSafely { onAliasEdit(it, newValue) }()
                         },
                     )
                     TextTableCell(
-                        text = "**********", weight = .35f, editable = true,
+                        text = "**********", weight = .45f, editable = true,
                         shouldBeEmptyOnEditStart = true,
                         shouldBeMasked = true,
                         onEdit = { newValue ->
@@ -88,7 +90,7 @@ fun PasswordsTable(
                         },
                     )
                     Row(
-                        modifier = Modifier.weight(weight = .3f),
+                        modifier = Modifier.width(180.dp),
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
