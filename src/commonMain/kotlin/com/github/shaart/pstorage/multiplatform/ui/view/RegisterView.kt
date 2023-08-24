@@ -87,7 +87,7 @@ fun RegisterView(
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().height(48.dp),
                 onClick = globalExceptionHandler.runSafely {
                     val createdUser = authService.register(RegisterModel(login, password, confirmationPassword))
                     onRegisterSuccess(createdUser)
@@ -95,8 +95,9 @@ fun RegisterView(
             ) {
                 Text("Create an account")
             }
+            Spacer(modifier = Modifier.height(8.dp))
             Button(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().height(48.dp),
                 colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface),
                 onClick = activeViewContext.goBack,
             ) {
