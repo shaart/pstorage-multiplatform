@@ -43,8 +43,8 @@ fun RowScope.TextTableCell(
         ) {
             TextField(
                 enabled = true,
-                modifier = Modifier.fillMaxWidth(.8f).focusRequester(focusRequester)
-                    .focusProperties { },
+                modifier = Modifier.fillMaxWidth(.8f)
+                    .focusRequester(focusRequester).focusProperties { },
                 value = textValue,
                 onValueChange = { textValue = it },
                 colors = TextFieldDefaults.textFieldColors(
@@ -54,13 +54,14 @@ fun RowScope.TextTableCell(
                 textStyle = TextStyle(
                     fontWeight = if (title) FontWeight.Bold else FontWeight.Normal,
                     textAlign = alignment,
+                    fontSize = MaterialTheme.typography.body1.fontSize
                 ),
                 visualTransformation = if (shouldBeMasked) PasswordVisualTransformation() else VisualTransformation.None,
             )
             LaunchedEffect(Unit) {
                 focusRequester.requestFocus()
             }
-            Row {
+            Row(modifier = Modifier.width(64.dp)) {
                 IconButton(
                     modifier = Modifier.width(32.dp),
                     onClick = {
