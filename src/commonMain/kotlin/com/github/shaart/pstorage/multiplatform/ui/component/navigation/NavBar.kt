@@ -21,7 +21,8 @@ import com.github.shaart.pstorage.multiplatform.ui.model.navigation.Views
 @Composable
 fun NavBar(
     activeViewContext: ActiveViewContext,
-    content: @Composable (() -> Unit)
+    activeView: ViewContextSnapshot,
+    content: @Composable () -> Unit,
 ) {
     val sideBarButtonsModifier: Modifier by remember {
         derivedStateOf {
@@ -59,7 +60,7 @@ fun NavBar(
         ) {
             Button(
                 modifier = sideBarButtonsModifier,
-                colors = sideBarButtonsColors(),
+                colors = resolveSideBarButtonColor(location = Views.MAIN, activeView = activeView),
                 onClick = { activeViewContext.changeView(ViewContextSnapshot(view = Views.MAIN)) },
             ) {
                 Icon(
@@ -69,7 +70,7 @@ fun NavBar(
             }
             Button(
                 modifier = sideBarButtonsModifier,
-                colors = sideBarButtonsColors(),
+                colors = resolveSideBarButtonColor(location = Views.SETTINGS, activeView = activeView),
                 onClick = { activeViewContext.changeView(ViewContextSnapshot(view = Views.SETTINGS)) },
             ) {
                 Icon(
@@ -95,13 +96,26 @@ fun NavBar(
 }
 
 @Composable
+fun resolveSideBarButtonColor(location: Views, activeView: ViewContextSnapshot): ButtonColors {
+    if (location == activeView.view) {
+        return sideBarActiveButtonColors()
+    }
+    return sideBarButtonsColors()
+}
+
+@Composable
 fun sideBarButtonsColors(): ButtonColors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface)
+
+@Composable
+fun sideBarActiveButtonColors(): ButtonColors =
+    ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
 
 @Preview
 @Composable
 fun previewNavBar() {
     NavBar(
         activeViewContext = PreviewData.previewActiveViewContextUnauthorized(),
+        activeView = ViewContextSnapshot(Views.MAIN),
     ) {
         TextField(value = "text", onValueChange = {})
         TextField(value = "another text", onValueChange = {})

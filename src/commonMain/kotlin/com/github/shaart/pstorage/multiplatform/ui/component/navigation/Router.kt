@@ -50,9 +50,8 @@ fun Router(
             }
         )
 
-        else -> NavBar(activeViewContext = activeViewContext) {
+        else -> NavBar(activeViewContext = activeViewContext, activeView = activeView) {
             when (activeView.view) {
-
                 Views.MAIN -> {
                     MainView(
                         authentication = activeViewContext.getAuthentication()!!,
