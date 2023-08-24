@@ -3,6 +3,8 @@ package com.github.shaart.pstorage.multiplatform.ui.view
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -97,6 +99,10 @@ fun RegisterView(
                 colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface),
                 onClick = activeViewContext.goBack,
             ) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack, contentDescription = "Back",
+                    modifier = Modifier.padding(end = 8.dp)
+                )
                 Text("Back")
             }
         }
