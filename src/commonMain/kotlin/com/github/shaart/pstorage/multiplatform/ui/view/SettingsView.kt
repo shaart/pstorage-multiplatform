@@ -53,8 +53,9 @@ fun SettingsView(
                             fontSize = 28.sp,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 32.dp)
+                            modifier = Modifier.fillMaxWidth()
                         )
+                        Divider(modifier = Modifier.padding(top = 8.dp, bottom = 32.dp))
                     }
                 }
                 item {
