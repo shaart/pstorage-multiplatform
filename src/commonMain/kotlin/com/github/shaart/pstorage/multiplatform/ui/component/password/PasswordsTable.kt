@@ -54,11 +54,12 @@ fun PasswordsTable(
         ) {
             item {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                    modifier = Modifier.fillMaxWidth().padding(start = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    TableHeaderTextCell(text = "Alias", weight = .3f, title = true)
-                    TableHeaderTextCell(text = "Password", weight = .3f, title = true)
+                    TableHeaderTextCell(text = "Alias", weight = .35f, title = true)
+                    TableHeaderTextCell(text = "Password", weight = .35f, title = true)
                     TableHeaderTextCell(text = "Actions", weight = .3f, title = true)
                 }
                 Divider(
