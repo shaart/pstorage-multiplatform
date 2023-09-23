@@ -156,6 +156,13 @@ tasks.withType<ProcessResources> {
     dependsOn("copyGeneratedMigrations")
     dependsOn("copyGeneratedResources")
 }
+tasks.withType<Jar> {
+    manifest {
+        attributes(
+            mutableMapOf(Pair("Class-Path","."))
+        )
+    }
+}
 
 flyway {
     locations = arrayOf("filesystem:$buildDir/generated/db/migrations")

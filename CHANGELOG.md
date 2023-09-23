@@ -1,4 +1,7 @@
 ## Changelog
+#### v1.2.1
+- Fix application's version showing
+
 #### v1.2.0
 - Navigation system update
 - UI redesign, Sidebar added for navigation and log out from main view
