@@ -135,10 +135,10 @@ sqldelight {
         }
     }
 }
-tasks.register<Copy>("copyGeneratedMigrations") {
+tasks.register<Copy>("processGeneratedMigrations") {
     group = "prebuild"
     val from = file("$buildDir/generated/db/migrations")
-    val into = file("$buildDir/processedResources/jvm/main/db/migrations")
+    val into = file("$buildDir/generated/resources/db/migrations")
     from(from)
     rename("(.+).sql", "V$1__migration.sql") // 1.sql -> V1__migration.sql
     into(into)
@@ -146,18 +146,18 @@ tasks.register<Copy>("copyGeneratedMigrations") {
 }
 tasks.register<Copy>("copyGeneratedResources") {
     group = "prebuild"
+    dependsOn("processGeneratedMigrations")
+    dependsOn("generateGitProperties")
+
     val generatedResources = file("$buildDir/generated/resources/")
     val targetResourcesRoot = file("$buildDir/processedResources/jvm/main/")
     from(generatedResources)
     into(targetResourcesRoot)
-    dependsOn("generateGitProperties")
 }
 tasks.named("processResources") {
-    dependsOn("copyGeneratedMigrations")
     dependsOn("copyGeneratedResources")
 }
 tasks.named("jvmProcessResources") {
-    dependsOn("copyGeneratedMigrations")
     dependsOn("copyGeneratedResources")
 }
 tasks.withType<Jar> {
