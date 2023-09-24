@@ -34,6 +34,8 @@ kotlin {
     }
     sourceSets {
         val jvmMain by getting {
+            resources.srcDir("$buildDir/generated/resources")
+
             dependencies {
                 // ui
                 implementation("org.jetbrains.compose.material:material-icons-extended-desktop:$composeVersion")
@@ -138,7 +140,7 @@ sqldelight {
 tasks.register<Copy>("processGeneratedMigrations") {
     group = "prebuild"
     val from = file("$buildDir/generated/db/migrations")
-    val into = file("$buildDir/processedResources/jvm/main/db/migrations")
+    val into = file("$buildDir/generated/resources/db/migrations")
     from(from)
     rename("(.+).sql", "V$1__migration.sql") // 1.sql -> V1__migration.sql
     into(into)
@@ -171,6 +173,6 @@ gitProperties {
         "git.commit.id", "git.commit.id.abbrev",
         "git.commit.time", "git.closest.tag.name",
     )
-    gitPropertiesResourceDir.set(file("$buildDir/processedResources/jvm/main"))
+    gitPropertiesResourceDir.set(file("$buildDir/generated/resources"))
     dateFormatTimeZone = "UTC"
 }
