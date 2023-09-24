@@ -37,6 +37,9 @@ jobs:
       - name: Validate gradle wrapper
         uses: gradle/wrapper-validation-action@v1
 
+      - name: "[FIXME] Copy processedResources because gradle on CI don't do it"
+        run: ./gradlew jvmProcessResources --no-daemon && cp -rf build/generated/resources/* build/processedResources/jvm/main/
+
       - name: Build
         run: ./gradlew build --no-daemon
 
@@ -50,8 +53,7 @@ jobs:
         run: find build/processedResources/ | sed -e "s/[^-][^\/]*\//  |/g" -e "s/|\([^ ]\)/|-\1/"
 
       - name: Package Release App
-        run: |
-          ./gradlew packageReleaseDistributionForCurrentOS --no-daemon
+        run: ./gradlew packageReleaseDistributionForCurrentOS --no-daemon
 
       - name: Show generated dir after package
         run: find build/generated/ | sed -e "s/[^-][^\/]*\//  |/g" -e "s/|\([^ ]\)/|-\1/"
