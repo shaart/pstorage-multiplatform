@@ -40,6 +40,9 @@ jobs:
       - name: Build
         run: ./gradlew build --no-daemon
 
+      - name: Check git.properties
+        run: cat build/generated/resources/git.properties
+
       - name: Package Release App
         run: |
           ./gradlew packageReleaseDistributionForCurrentOS --no-daemon
