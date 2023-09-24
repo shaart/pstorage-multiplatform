@@ -152,7 +152,11 @@ tasks.register<Copy>("copyGeneratedResources") {
     into(targetResourcesRoot)
     dependsOn("generateGitProperties")
 }
-tasks.withType<ProcessResources> {
+tasks.named("processResources") {
+    dependsOn("copyGeneratedMigrations")
+    dependsOn("copyGeneratedResources")
+}
+tasks.named("jvmProcessResources") {
     dependsOn("copyGeneratedMigrations")
     dependsOn("copyGeneratedResources")
 }
