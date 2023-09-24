@@ -43,11 +43,20 @@ jobs:
       - name: Check generated git.properties
         run: cat build/generated/resources/git.properties
 
+      - name: Show generated dir before package
+        run: find build/generated/ | sed -e "s/[^-][^\/]*\//  |/g" -e "s/|\([^ ]\)/|-\1/"
+
+      - name: Show processedResources before package
+        run: find build/processedResources/ | sed -e "s/[^-][^\/]*\//  |/g" -e "s/|\([^ ]\)/|-\1/"
+
       - name: Package Release App
         run: |
           ./gradlew packageReleaseDistributionForCurrentOS --no-daemon
 
-      - name: Show processedResources
+      - name: Show generated dir after package
+        run: find build/generated/ | sed -e "s/[^-][^\/]*\//  |/g" -e "s/|\([^ ]\)/|-\1/"
+
+      - name: Show processedResources after package
         run: find build/processedResources/ | sed -e "s/[^-][^\/]*\//  |/g" -e "s/|\([^ ]\)/|-\1/"
 
       - name: Check processed git.properties
