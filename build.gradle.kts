@@ -138,27 +138,19 @@ sqldelight {
 tasks.register<Copy>("processGeneratedMigrations") {
     group = "prebuild"
     val from = file("$buildDir/generated/db/migrations")
-    val into = file("$buildDir/generated/resources/db/migrations")
+    val into = file("$buildDir/processedResources/jvm/main/db/migrations")
     from(from)
     rename("(.+).sql", "V$1__migration.sql") // 1.sql -> V1__migration.sql
     into(into)
     dependsOn("generateCommonMainPstorageDatabaseMigrations")
 }
-tasks.register<Copy>("copyGeneratedResources") {
-    group = "prebuild"
+tasks.named("processResources") {
     dependsOn("processGeneratedMigrations")
     dependsOn("generateGitProperties")
-
-    val generatedResources = file("$buildDir/generated/resources/")
-    val targetResourcesRoot = file("$buildDir/processedResources/jvm/main/")
-    from(generatedResources)
-    into(targetResourcesRoot)
-}
-tasks.named("processResources") {
-    dependsOn("copyGeneratedResources")
 }
 tasks.named("jvmProcessResources") {
-    dependsOn("copyGeneratedResources")
+    dependsOn("processGeneratedMigrations")
+    dependsOn("generateGitProperties")
 }
 tasks.withType<Jar> {
     manifest {
@@ -179,6 +171,6 @@ gitProperties {
         "git.commit.id", "git.commit.id.abbrev",
         "git.commit.time", "git.closest.tag.name",
     )
-    gitPropertiesResourceDir.set(file("$buildDir/generated/resources"))
+    gitPropertiesResourceDir.set(file("$buildDir/processedResources/jvm/main"))
     dateFormatTimeZone = "UTC"
 }
