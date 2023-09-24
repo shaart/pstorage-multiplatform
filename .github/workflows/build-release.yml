@@ -46,12 +46,12 @@ jobs:
       - name: Package Release App
         run: |
           ./gradlew packageReleaseDistributionForCurrentOS --no-daemon
-      
-      - name: Check processed git.properties
-        run: cat build/processedResources/jvm/main/git.properties
 
       - name: Show processedResources
         run: find build/processedResources/ | sed -e "s/[^-][^\/]*\//  |/g" -e "s/|\([^ ]\)/|-\1/"
+
+      - name: Check processed git.properties
+        run: cat build/processedResources/jvm/main/git.properties
 
       - name: Archive Artifacts
         uses: actions/upload-artifact@v3
