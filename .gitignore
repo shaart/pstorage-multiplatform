@@ -1,5 +1,7 @@
 # Custom
 logs/
+*.data.db
+*.sqlite
 
 # Gradle
 .gradle
